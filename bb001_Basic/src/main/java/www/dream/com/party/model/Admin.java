@@ -10,4 +10,9 @@ import lombok.Data;
  */
 @Data
 public class Admin extends Party {
+	@Override
+	public String toString() {
+		return "Admin [toString()=" + super.toString() + "]";
+	}
+	
 }

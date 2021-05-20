@@ -16,11 +16,19 @@ public abstract class Party extends CommonMngVO {
 	private String userPwd;	//암호, 암호화는 나중에
 	private	String name;	
 	private	Date birthDate;	//생일 년월일
-	private	boolean isMale; //남녀구분
+	private	boolean male; //남녀구분
 	private	boolean enabled;//가입중... 탈퇴시 faㅣse
 	
 	//1 : N 관계에 대한 속성
 	private List<ContactPoint> listContactPoint;
+
+	@Override
+	public String toString() {
+		return "Party [userId=" + userId + ", userPwd=" + userPwd + ", name=" + name + ", birthDate=" + birthDate
+				+ ", male=" + male + ", enabled=" + enabled + ", listContactPoint=" + listContactPoint
+				+ ", toString()=" + super.toString() + "]";
+	}
+
 	
 }
 	

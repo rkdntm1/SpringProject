@@ -3,8 +3,8 @@
 --date -> 년월일(Date), 일시(timestamp)
 --boolean -> char(1)
 drop table s_contact_point;
-drop table s_contact_point_type;
 drop table s_party;
+drop table s_contact_point_type;
 drop table s_party_type;
 --Sequence
 drop SEQUENCE seq_party_id;
@@ -33,7 +33,7 @@ create table s_party (
 	enabled			char(1) 			default 1,
 	reg_dt			timestamp			default sysdate not null, --등록시점
 	upt_dt			timestamp			default sysdate not null, --수정시점
-	descrim			char(10)			not null
+	descrim			varchar2(10)		not null
 	--Admin용 속성 정의함
 	--Manager용 속성 정의함
 	--User용 속성 정의함

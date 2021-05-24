@@ -25,7 +25,7 @@ public class PostMapperTest {
 	public void test000InsertPost() {
 		try {
 			BoardVO commNotice = new BoardVO(1);
-			PostVO post = new PostVO("아름다운 강산", "beautiful Kang Mountain ~ ", new Admin("admin"));
+			PostVO post = new PostVO("테스트", "게시글 테스트", new Admin("admin"));
 			postMapper.insert(commNotice, post);
 			//insert()문에서는 추가된 데이터의 PK값을 알 수 없다. -> 그래서 ->insertSelectKey()를 사용한다. p191참조
 			System.out.println("지금 만든 객체의 ID는 " + post.getId()); 
@@ -35,10 +35,39 @@ public class PostMapperTest {
 	}
 	
 	@Test
-	public void test001GetList() {
+	public void test010DeleteById() {
+		try {
+			System.out.println(postMapper.deletePostById("00003"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void test040GetList() {
 		assertNotNull(postMapper);
 		try {
 			postMapper.getList(1).forEach(post->{System.out.println(post);});	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void test020UpdateById() {
+		try {
+			PostVO post = postMapper.findPostById("00005");
+			post.setTitle(post.getTitle() + "업데이트 v1");
+			postMapper.updatePost(post);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void test030FindById() {
+		try {
+			System.out.println(postMapper.findPostById("00003"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

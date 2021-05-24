@@ -13,5 +13,14 @@ public interface PostMapper {
 	 * 이를 실수하지 않기 위하여 한개여도 그냥 명시적으로 넣어주자 */
 	public List<PostVO> getList(@Param("boardId") int boardId);
 	
+	/** id 값으로 Post 객체 조회 */
+	public PostVO findPostById(String id);
+	
 	public int insert(@Param("board") BoardVO board, @Param("post") PostVO post);
+	
+	/** 게시글 수정 처리 */
+	public int updatePost(PostVO post);
+	
+	/** id 값으로 Post 객체 삭제*/
+	public int deletePostById(String id);
 }

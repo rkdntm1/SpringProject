@@ -48,13 +48,14 @@
 		<result property="info" column="info"></result>		
 	</resultMap>
 	
-		<!-- public List<Party> getList(); 함수 짝지어주기 -->
-		<select id="getList" resultMap="partyMap"> 
+	<!-- public List<Party> getList(); 함수 짝지어주기 -->
+	<select id="getList" resultMap="partyMap"> 
 	<![CDATA[
 	select p.*,
 		cp.user_id cp_user_id, cp.contact_point_type cp_contact_point_type,
 		cp.info cp_info, cp.reg_dt cp_reg_dt, cp.upt_dt cp_upt_dt
       from s_party p left outer join s_contact_point cp on p.user_id = cp.user_id
 	]]>
-		</select>
+	</select>
+	
 </mapper>

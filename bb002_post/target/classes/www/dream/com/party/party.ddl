@@ -98,3 +98,36 @@ insert into s_contact_point(user_id, contact_point_type, info)
 	values('hong', 'address', '한양 남산동 333번지');
 insert into s_contact_point(user_id, contact_point_type, info)
 	values('lee', 'address', '조선 충청도 아산');
+	
+
+
+--Each(각각) 전략으로 행위자 개념을 Table로 만들기 예시
+create table s_comInfo (
+	user_id			varchar2(10)		primary key,
+	reg_dt			timestamp			default sysdate not null, --등록시점
+	upt_dt			timestamp			default sysdate not null --수정시점
+);	
+
+create table s_party (
+	user_id			varchar2(10)		primary key,
+	user_pwd		varchar2(100)		not null, 		-- 100 : 암호화된 결과물까지 고려.
+	name			varchar2(100)		not null,		-- 100 : 전 지구적인 사람의 이름 길이까지 고려.
+	birth_dt		Date,						 		-- 년 월 일
+	sex				char(1)				default 1 not null, -- true : male, false: female 
+	enabled			char(1) 			default 1
+);	
+
+create table s_admin (
+	user_id			varchar2(10)		primary key,
+);	
+create table s_manager (
+	user_id			varchar2(10)		primary key,
+);	
+create table s_user (
+	user_id			varchar2(10)		primary key,
+);	
+
+select a.*, p.*, c.*
+  from s_admin a, s_party p, s_comInfo c
+ where a.user_id = p.user_id
+   and p.user_id = c.user_id

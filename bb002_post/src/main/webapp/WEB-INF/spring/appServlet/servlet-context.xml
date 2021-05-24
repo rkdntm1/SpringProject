@@ -23,5 +23,6 @@
 	
 	<context:component-scan base-package="www.dream.com" />
 	<context:component-scan base-package="www.dream.com.party.control" />
+	<context:component-scan base-package="www.dream.com.bulletinBoard.control" />
 	
 </beans:beans>

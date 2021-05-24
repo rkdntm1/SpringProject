@@ -18,6 +18,7 @@ public class BoardVO extends CommonMngVO {
 	public BoardVO(int id) { //강제적으로 생성자를 만드는순간 @Data의 기본생성자가 사라짐-> @NoArgsConstructor
 		this.id = id;
 	}
+	
 	@Override
 	public String toString() {
 		return "BoardVO [아이디=" + id + ", 게시판이름=" + name

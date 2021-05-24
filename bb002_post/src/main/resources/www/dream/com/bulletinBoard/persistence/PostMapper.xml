@@ -30,9 +30,36 @@
 	]]>
 	</select>
 	
+	<!-- public PostVO findPostById(String id); -->
+	<select id="findPostById" resultMap="postMapper"> 
+	<![CDATA[ 
+	select p.*, w.name w_name, w.descrim w_descrim
+	  from s_post p, s_party w
+	 where p.id = #{id}
+	   and p.writer_id = w.user_id
+	]]>
+	</select>
+	
 	<!-- public int insert(@Param("board") BoardVO board, @Param("post") PostVO post); -->
 	<insert id="insert">
+		<selectKey keyProperty="post.id" order="BEFORE" resultType="string">
+			select get_id(seq_post_id.nextval) from dual
+		</selectKey>
 		insert into s_post(id, board_id, writer_id, title, content)
-			values(get_id(seq_post_id.nextval), #{board.id}, #{post.writer.userId}, #{post.title}, #{post.content})
+			values(#{post.id}, #{board.id}, #{post.writer.userId}, #{post.title}, #{post.content})
 	</insert>
+	
+	<!-- public int updatePost(PostVO post); -->
+	<update id="updatePost">
+		update s_post
+		   set title = #{title},		
+			   content = #{content},	
+			   upt_dt = sysdate	
+		 where id=#{id}
+	</update>
+	
+	<!-- public int deletePostById(String id); -->
+	<delete id="deletePostById">
+	delete from s_post where id = #{id}
+	</delete>
 </mapper>

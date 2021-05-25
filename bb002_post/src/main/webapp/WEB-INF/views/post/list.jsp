@@ -17,7 +17,7 @@
   </tr>
   <c:forEach items="${listPost}" var="post">
   	<tr>
-  		<td><a href="/post/readPost?postId=${post.id}">${post.title}</a></td>
+  		<td><a href="/post/readPost?boardId=${boardId}&postId=${post.id}">${post.title}</a></td>
   		<td>${post.content}</td>
   		<td>${post.writer.name}</td>
   	</tr>

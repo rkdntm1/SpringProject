@@ -12,6 +12,9 @@ import www.dream.com.party.model.Party;
 @Data
 @NoArgsConstructor
 public class PostVO extends CommonMngVO {
+	/** DB 함수 get_id 참조 */
+	public static final int ID_LENGTH = 5;
+	
 	private String id;		//아이디
 	private String title;	//제목
 	private String content;	//내용

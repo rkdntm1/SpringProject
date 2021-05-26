@@ -35,18 +35,20 @@ public class PostController {
 		
 	}
 	
-	@GetMapping(value="readPost")
+	@GetMapping(value={"readPost", "modifyPost"})
 	public void findPostById(@RequestParam("boardId") int boardId, 
 			@RequestParam("postId") String id, Model model) {
 		model.addAttribute("post", postService.findPostById(id));
 		model.addAttribute("boardId", boardId);
 	}
 	
+	/** 게시글 등록페이지 들어가기 */
 	@GetMapping(value="registerPost")
 	public void registerPost(@RequestParam("boardId") int boardId, Model model) {
 		model.addAttribute("boardId", boardId);
 	}
 	
+	/** 게시글 등록페이지에서 입력한 내용 insert하기 */
 	@PostMapping(value="registerPost")
 	public String registerPost(@RequestParam("boardId") int boardId,
 			PostVO newpost, RedirectAttributes rttr) {
@@ -60,11 +62,20 @@ public class PostController {
 		return "redirect:/post/list?boardId=" + boardId;
 	}
 	
+	@PostMapping(value="modifyPost")
+	public String modifyPost(@RequestParam("boardId") int boardId, PostVO modifiedPost, RedirectAttributes rttr) {
+		if (postService.updatePost(modifiedPost)) {
+			rttr.addFlashAttribute("result", "수정처리가 성공");
+		}
+		return "redirect:/post/list?boardId=" + boardId;
+	}
+	
+	/** 게시글 삭제 하기 */
 	@PostMapping(value="removePost")
 	public String removePost(@RequestParam("boardId") int boardId, 
 			@RequestParam("postId") String id, RedirectAttributes rttr) {
 		if (postService.deletePostById(id)) {
-			rttr.addFlashAttribute("result", "삭제성공");
+			rttr.addFlashAttribute("result", "삭제처리가 성공");
 		}
 		return "redirect:/post/list?boardId=" + boardId;
 	}

@@ -1,20 +1,62 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>게시글 보기</title>
-</head>
-<body>
-	<form action="/post/removePost" method="post">
-		제목<p>${post.title}</p>
-  		내용<p>${post.content}</p>
-  		작성자<p>${post.writer.name}</p>
-  		<input type="hidden" name="boardId" value="${boardId}">
-  		<input type="hidden" name="postId" value="${post.id}">
-  		<input type="submit" value="삭제">
-	</form>  	
-</body>
-</html>
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<%@include file="../includes/header.jsp"%>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+	<!-- DataTales Example -->
+	<div class="card shadow mb-4">
+		<div class="card-body">			
+			<div class="form-group">
+				<label>아이디</label>
+				<input name="id" value="${post.id}" readonly>
+			</div>
+			<div class="form-group">
+				<label>제목</label>
+				<input name="title" value="${post.title}" class="form-control" readonly>
+			</div>
+			<div class="form-group">
+				<label>내용</label>
+				<textarea name="content" class="form-control" row="3" readonly>${post.content}</textarea>
+			</div>
+			<div class="form-group">
+				<label>작성자</label>
+				<input name="writer.name" value="${post.writer.name}" class="form-control" readonly>
+			</div>
+		
+		<!-- data-oper: data(button 엘리먼트에게 oper라는 변수명에 modify라는 값을 추가해줄거다) -->
+		<button data-oper='modify' class="btn btn-primary">수정</button>
+		<button data-oper='list' class="btn btn-secondary">목록</button>
+	
+		<form id="frmOper" action="/post/modifyPost" method="get">
+			<input type="hidden" id="emememr" name="boardId" value="${boardId}">
+			<input type="hidden" id="ehehehr" name="postId" value="${post.id}">
+		</form>
+		</div>
+	</div>
+
+</div>
+<!-- /.container-fluid -->
+
+</div>
+<!-- End of Main Content -->
+
+<%@include file="../includes/footer.jsp"%>
+	
+<script>
+$(document).ready(function(){
+	//속성선택자를 통해서 button의 data-oper 속성 'modify'를 가져와서 클릭 이벤트 처리
+	//*-전체선택자, .-클래스선택자, # - 아이디선택자, [] - 속성선택자, :- 의사선택자
+	$("button[data-oper='modify']").on("click", function(){ 
+		$("#frmOper").submit();
+	});
+	
+	//속성선택자를 통해서 button의 data-oper 속성 'list'를 가져와서 클릭 이벤트 처리
+	$("button[data-oper='list']").on("click", function(){
+		$("#frmOper").find("#ehehehr").remove(); //list로 갈때는 postId속성은 필요없으므로 삭제
+		$("#frmOper").attr("action","/post/list").submit(); //action 속성을 "/post/list"로 변경 
+	});
+});
+</script>

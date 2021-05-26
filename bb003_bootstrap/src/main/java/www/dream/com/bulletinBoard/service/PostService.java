@@ -33,8 +33,8 @@ public class PostService {
 	}
 
 	/** 게시글 수정 처리 */
-	public int updatePost(PostVO post) {
-		return postMapper.updatePost(post);
+	public boolean updatePost(PostVO post) {
+		return postMapper.updatePost(post) == 1;
 	}
 
 	/** id 값으로 Post 객체 삭제 */

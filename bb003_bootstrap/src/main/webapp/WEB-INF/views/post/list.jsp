@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ page import="www.dream.com.bulletinBoard.model.PostVO" %>
 
 <%@include file="../includes/header.jsp"%>
 <!-- Begin Page Content -->
@@ -13,7 +14,8 @@
 			<h6 class="m-0 font-weight-bold text-primary">${boardName} 글 목록</h6>
 		</div>
 		<div class="card-body">
-			<a href="/post/registerPost?boardId=${boardId}">글쓰기</a>
+		<button id="btnRegisterPost">글쓰기</button>
+			
 			<div class="table-responsive">
 				<table class="table table-bordered" id="dataTable" width="100%"
 					cellspacing="0">
@@ -29,8 +31,8 @@
 					<tbody>
 						<c:forEach items="${listPost}" var="post">
 							<tr>
-								<td><a
-									href="/post/readPost?boardId=${boardId}&postId=${post.id}">${post.title}</a></td>
+								<td>
+									<a href="/post/readPost?boardId=${boardId}&postId=${post.id}">${post.title}</a></td>
 								<td>${post.writer.name}</td>
 								<td>${post.readCnt}</td>
 								<td><fmt:formatDate pattern="yyyy-MM-dd" value="${post.updateDate}"/>
@@ -72,24 +74,32 @@
 </div>
 <!-- End of Main Content -->
 
+<%@include file="../includes/footer.jsp"%>
+
 <script>
 $(document).ready(function(){
 	var result = '<c:out value="${result}"/>';
+	
 	checkModal(result);
 	
+	history.replaceState({}, null, null);
+	
 	function checkModal(result) {
-		if (result === '') {
+		if (result === '' || history.state) {
 			return;
 		}
-		if (result != "삭제성공") {
+		if (result.length == ${PostVO.ID_LENGTH}) { // DB에 게시글 ID 가 5자리라서 상수로 정의하여 유지보수 업
 			$(".modal-body").html("게시글 " + result + "번이 등록되었습니다.");
+		} else {
+			$(".modal-body").html("게시글에 대한 "+ result + "하였습니다");
 		}
-		if (result === "삭제성공") {
-			$(".modal-body").html("게시글을 성공적으로 삭제하였습니다.");
-		}
+		
 		$("#myModal").modal("show");
 	}	
+	
+	//var boardId = '<c:out value="${boardId}"/>';
+	$("#btnRegisterPost").on("click", function() {
+		self.location ="/post/registerPost?boardId=${boardId}";
+	});
 });
 </script>
-
-<%@include file="../includes/footer.jsp"%>

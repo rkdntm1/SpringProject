@@ -10,6 +10,8 @@ import www.dream.com.common.dto.Criteria;
 
 public interface PostMapper {
 	//LRCUD
+	public long getTotalCount(@Param("boardId") int boardId);
+	
 	/* mapper 함수의 인자 개수가 여러개 일 경우 필수적으로 @Param을 넣야합니다.
 	 * 이를 실수하지 않기 위하여 한개여도 그냥 명시적으로 넣어주자 */
 	public List<PostVO> getList(@Param("boardId") int boardId, @Param("cri") Criteria cri);

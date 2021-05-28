@@ -4,7 +4,7 @@ drop table s_id_seed;
 create table s_id_seed(
 	seq_id		number(19)		primary key,
 	seed 		char(5)
-);
+);	
 
 CREATE OR REPLACE FUNCTION get_id(intSeed number) RETURN char
 IS

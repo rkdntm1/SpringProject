@@ -48,7 +48,7 @@ public class PostMapperTest {
 	public void test040GetList() {
 		assertNotNull(postMapper);
 		try {
-			postMapper.getList(1, new Criteria(5, 10, 1234)).forEach(post->{System.out.println(post);});	
+			postMapper.getList(1, new Criteria()).forEach(post->{System.out.println(post);});	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -32,7 +32,8 @@
 						<c:forEach items="${listPost}" var="post">
 							<tr>
 								<td>
-									<a href="/post/readPost?boardId=${boardId}&postId=${post.id}">${post.title}</a></td>
+									<!-- id는 1개만 class는 여러개의 객체 가능 -->
+									<a class="anchor4post" href="${post.id}">${post.title}</a></td>
 								<td>${post.writer.name}</td>
 								<td>${post.readCnt}</td>
 								<td><fmt:formatDate pattern="yyyy-MM-dd" value="${post.updateDate}"/>
@@ -136,6 +137,16 @@ $(document).ready(function(){
 	$('.page-item a').on('click',function(eInfo){
 		eInfo.preventDefault();
 		$("input[name='pageNumber']").val($(this).attr('href'));
+		frmPaging.submit();
+	});
+	
+	/* 특정 게시물에 대한 상세 조회 처리 */
+	$('.anchor4post').on('click',function(e) {
+		e.preventDefault();
+		var postId = $(this).attr('href');
+		frmPaging.append("<input name='postId' type='hidden' value='" + postId + "'>");
+		frmPaging.attr('action', '/post/readPost');
+		frmPaging.attr('method', 'get');
 		frmPaging.submit();
 	});
 });

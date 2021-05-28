@@ -16,6 +16,10 @@ public class PostService {
 	private PostMapper postMapper;
 
 	// LRCUD
+	public long getTotalCount(int boardId) {
+		return postMapper.getTotalCount(boardId);
+	}
+	
 	/*
 	 * mapper 함수의 인자 개수가 여러개 일 경우 필수적으로 @Param을 넣야합니다. 이를 실수하지 않기 위하여 한개여도 그냥 명시적으로
 	 * 넣어주자

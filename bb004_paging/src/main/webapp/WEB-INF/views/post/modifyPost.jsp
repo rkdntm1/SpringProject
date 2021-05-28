@@ -19,6 +19,8 @@
 				
 				<input id="boardId" type="hidden" name="boardId" value="${boardId}">
 				<input type="hidden" name="postId" value="${post.id}">
+				<input type="hidden" name="pageNumber" value="${pagenation.pageNumber}">
+				<input type="hidden" name="amount" value="${pagenation.amount}">
 			</form>
 		</div>
 	</div>
@@ -44,12 +46,19 @@ $(document).ready(function(){
 		if (oper === 'remove') { //form에 들어있는 내용 바꿔서 
 			frmPost.attr("action", "/post/removePost");	
 		} else if (oper === 'list') {
-			var boardIdInput = frmPost.find("#boardId"); // empty하기전에 미리 boardId객체를 찾아놓는다. 
+			// empty하기전에 list로 돌아갈때 필요한 속성들을 저장해놓음
+			var boardIdInput = frmPost.find("#boardId");  
+			var pageNumberInput = $('input[name="pageNumber"]');
+			var amountInput = $('input[name="amount"]');
+			
 			frmPost.attr("method", "get");
 			frmPost.attr("action", "/post/list");
-			//empty : form에 담겨이쓴 모든 하위 요소를 없애라
-			frmPost.empty();
-			frmPost.append(boardIdInput); //목록으로 갈때 boardId 가 필요함 
+			//empty : form에 담겨이쓴 모든 하위 요소를 없애라(필요없는 속성값들을 없애줌)
+			frmPost.empty(); 
+			//목록으로 갈때 보던 쪽수로 가기위해서  boardIdInput pageNumberInput amountInput가 필요함
+			frmPost.append(boardIdInput); 
+			frmPost.append(pageNumberInput); 
+			frmPost.append(amountInput); 
 		}
 		frmPost.submit();
 	});

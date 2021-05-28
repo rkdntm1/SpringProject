@@ -20,12 +20,20 @@
 		</association>
 	</resultMap>
 
+	<!-- public long getTotalCount(@Param("boardId") int boardId); -->
+	<select id="getTotalCount" resultType="_long"> 
+	<![CDATA[
+		select count(*)
+		from s_post p
+		where board_id = #{boardId}
+	]]>
+	</select>
+		
 	<!--public List<PostVO> getList(@Param("boardId") int boardId, @Param("cri") Criteria cri); -->
 	<select id="getList" resultMap="postMapper"> 
 	<![CDATA[ 
 	select p.*, w.name w_name, w.descrim w_descrim
 	  from (
-	  		
 	  	  	select p.* , rownum rn 
 	  	      from s_post p
 	  	     where rownum <= #{cri.pageNumber} * #{cri.amount}

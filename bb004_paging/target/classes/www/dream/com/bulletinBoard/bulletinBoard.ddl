@@ -31,6 +31,8 @@ create table s_post( -- 게시판
 	reg_dt			timestamp			default sysdate not null, --등록시점
 	upt_dt			timestamp			default sysdate not null --수정시점	
 );	
+--create index idx_post_board_ID on s_post(board_id, id);
+
 insert into s_post(id, board_id, writer_id, title, content)
 	values('00000', 1, 'admin', '우리 Dream 사랑해주세요', 'IT 용어 전문 게시판 서비스 회사입니다.');
 insert into s_post(id, board_id, writer_id, title, content)

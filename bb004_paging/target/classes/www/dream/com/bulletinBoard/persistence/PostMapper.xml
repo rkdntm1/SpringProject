@@ -29,10 +29,7 @@
 	]]>
 	</select>
 		
-	<!--public List<PostVO> getList(@Param("boardId") int boardId, @Param("cri") Criteria cri); -->
-	<select id="getList" resultMap="postMapper"> 
-	<![CDATA[ 
-	select p.*, w.name w_name, w.descrim w_descrim
+	<!-- select p.*, w.name w_name, w.descrim w_descrim
 	  from (
 	  	  	select p.* , rownum rn 
 	  	      from s_post p
@@ -41,7 +38,20 @@
 	  	     order by id desc 
 	  		) p, s_party w
 	 where p.rn > (#{cri.pageNumber} - 1) * #{cri.amount}
-	   and p.writer_id = w.user_id
+	   and p.writer_id = w.user_id -->
+	<!--public List<PostVO> getList(@Param("boardId") int boardId, @Param("cri") Criteria cri); -->
+	<select id="getList" resultMap="postMapper"> 
+	<![CDATA[ 
+	select p.*, w.name w_name, w.descrim w_descrim
+	  from (
+    	SELECT *
+		  FROM s_post
+		 where board_id =  #{boardId}
+		 ORDER BY id DESC
+		OFFSET (#{cri.pageNumber} - 1) * #{cri.amount} ROWS FETCH FIRST #{cri.amount} ROWS ONLY
+		) p, s_party w
+	     WHERE p.writer_id = w.user_id
+	   
 	]]>
 	</select>
 	

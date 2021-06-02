@@ -107,6 +107,8 @@ public class PosAnalyzer {
 	}
 	
 	private static void analyzeHashTag(String anlysisTargetString, Map<String, Integer> ret) {
+		if (anlysisTargetString == null)
+			return;
 		KomoranResult analyzeResultList = komoran.analyze(anlysisTargetString);
 		List<Token> tokenList = analyzeResultList.getTokenList();
 		for (Token token : tokenList) {

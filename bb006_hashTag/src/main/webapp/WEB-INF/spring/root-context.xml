@@ -30,6 +30,7 @@
 	<mybatis-spring:scan base-package="www.dream.com.party.persistence"/>
 	<mybatis-spring:scan base-package="www.dream.com.bulletinBoard.persistence"/>
 	<mybatis-spring:scan base-package="www.dream.com.selectKey.persistence"/>
+	<mybatis-spring:scan base-package="www.dream.com.hashTag.persistence"/>
 	
 		
 </beans>

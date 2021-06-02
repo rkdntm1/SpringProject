@@ -1,6 +1,9 @@
 package www.dream.com.bulletinBoard.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,11 +12,18 @@ import www.dream.com.bulletinBoard.model.BoardVO;
 import www.dream.com.bulletinBoard.model.PostVO;
 import www.dream.com.bulletinBoard.persistence.PostMapper;
 import www.dream.com.common.dto.Criteria;
+import www.dream.com.framwork.langPosAnalyzer.PosAnalyzer;
+import www.dream.com.framwork.util.StringUtil;
+import www.dream.com.hashTag.model.HashtagVO;
+import www.dream.com.hashTag.persistence.HashTagMapper;
 
 @Service
 public class PostService {
 	@Autowired
 	private PostMapper postMapper;
+	
+	@Autowired
+	private HashTagMapper hashTagMapper;
 
 	// LRCUD
 	public long getTotalCount(int boardId) {
@@ -34,7 +44,37 @@ public class PostService {
 	}
 
 	public int insert(BoardVO board, PostVO post) {
-		return postMapper.insert(board, post);
+		int affectedRows = postMapper.insert(board, post);
+		Map<String, Integer> mapOccur = PosAnalyzer.getHashTags(post);
+		Set<String> setHashTag = mapOccur.keySet();
+		if (! setHashTag.isEmpty()) {
+			Set<HashtagVO> setExisting = hashTagMapper.findExisting(setHashTag);
+			//기존에 있는 것들과는 짝 지어 주어야합니다.
+			for (HashtagVO hashtag : setExisting) {
+				hashtag.setOccurCnt(mapOccur.get(hashtag.getHashtag()));
+			}
+			if (! setExisting.isEmpty())
+				hashTagMapper.insertMapBetweenPost(setExisting, post.getId());
+			
+			//setHashTag에 남은 것들은 신규 처리해야할 것들입니다.
+			for (HashtagVO hashtag : setExisting) {
+				setHashTag.remove(hashtag.getHashtag());
+			}
+			Set<String> setNewHashTag = setHashTag;
+			if (! setNewHashTag.isEmpty()) {
+				//새로운 단어를 HashTag 테이블에 등록해줍니다.
+				int[] ids = StringUtil.convertCommaSepString2IntArr(hashTagMapper.getIds(setNewHashTag.size()));
+				int idx = 0;
+				Set<HashtagVO> listNewHashTag = new HashSet<>();
+				for (String hasTag : setNewHashTag) {
+					HashtagVO newHashtag = new HashtagVO(ids[idx++], hasTag);
+					listNewHashTag.add(newHashtag);
+				}
+				hashTagMapper.createHashTag(listNewHashTag); //신규단어가 들어감
+				hashTagMapper.insertMapBetweenPost(listNewHashTag, post.getId());	
+			}
+		}
+		return affectedRows;
 	}
 
 	/** 게시글 수정 처리 */

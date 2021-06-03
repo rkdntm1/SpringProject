@@ -18,5 +18,4 @@ public class PartyService {
 	public List<Party> getList() {
 		return partyMapper.getList();
 	}
-	
 }

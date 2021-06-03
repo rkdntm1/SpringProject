@@ -39,6 +39,7 @@
 	  		) p, s_party w
 	 where p.rn > (#{cri.pageNumber} - 1) * #{cri.amount}
 	   and p.writer_id = w.user_id -->
+	   
 	<!--public List<PostVO> getList(@Param("boardId") int boardId, @Param("cri") Criteria cri); -->
 	<select id="getList" resultMap="postMapper"> 
 	<![CDATA[ 

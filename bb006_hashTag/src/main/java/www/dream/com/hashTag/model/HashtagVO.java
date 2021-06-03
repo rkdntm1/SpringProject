@@ -10,7 +10,7 @@ public class HashtagVO {
 	private String hashtag;
 	private String description;
 	
-	private int occurCnt;
+	private int occurCnt; //빈도수
 
 	public HashtagVO(int id, String hashtag) {
 		this.id = id;

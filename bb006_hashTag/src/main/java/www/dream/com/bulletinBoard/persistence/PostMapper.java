@@ -22,6 +22,7 @@ public interface PostMapper {
 	/** id 값으로 Post 객체 조회 */
 	public PostVO findPostById(String id);
 	
+	/** 게시글 등록 */
 	public int insert(@Param("board") BoardVO board, @Param("post") PostVO post);
 	
 	/** 게시글 수정 처리 */

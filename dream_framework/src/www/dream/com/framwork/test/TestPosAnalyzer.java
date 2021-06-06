@@ -18,7 +18,7 @@ public class TestPosAnalyzer {
 		}
 	}
 	
-	@Test
+	//@Test
 	public void testList() {
 		List<String> data = new ArrayList<>();
 		data.add("안녕하세요! 홍길동님");
@@ -30,7 +30,7 @@ public class TestPosAnalyzer {
 		}
 	}
 	
-	//@Test
+	@Test
 	public void test() {
 		Post post = new Post();
 		post.setTitle("질문");

@@ -16,7 +16,7 @@ import www.dream.com.framwork.langPosAnalyzer.HashTarget;
 @Data
 @NoArgsConstructor
 public abstract class Party extends CommonMngVO {
-	private String userId;	//로그인 ID
+	private String userId;	//로그인 IㅇD
 	private String userPwd;	//암호, 암호화는 나중에
 	@HashTarget
 	private	String name;	

@@ -40,6 +40,7 @@ public class PostController {
 		fromUser.setTotal(postService.getTotalCount(boardId));
 	}
 	
+	/** 검색했을때 게시글목록 조회하기 */
 	@GetMapping(value="listBySearch")
 	public String listPostBySearch(@RequestParam("boardId") int boardId,
 			@ModelAttribute("pagenation") Criteria fromUser, Model model) {

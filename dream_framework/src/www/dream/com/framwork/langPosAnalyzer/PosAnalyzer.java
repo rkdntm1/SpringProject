@@ -35,11 +35,11 @@ public class PosAnalyzer {
 	private static void getHashTags(Object obj, Map<String, Integer> map) {
 		if (obj == null) {
 			return;
-		} else if (obj instanceof String) {
+		} else if (obj instanceof String) { //들어온 객체가 String 객체 타입이면
 			analyzeHashTag((String) obj, map);
-		} else if (obj instanceof Iterable) {
+		} else if (obj instanceof Iterable) { //들어온 객체가 가장 자주 쓰이는 ArrayList를 포괄하는 Iterable 객체 타입이면
 			((Iterable) obj).forEach(ele->getHashTags(ele, map));
-		} else if (obj instanceof Map) {
+		} else if (obj instanceof Map) { //들어온 객체가 자주쓰이는 HashMap을 포괄하는 Map 객체 타입이면
 			((Map) obj).entrySet().forEach(ele->getHashTags(ele, map)); // entrySet : map의 value를 가져옴  vs keySet : map의 key
 		} else {
 			List<AccessibleObject> listFeature =  ClassAnalyzer.findFeatureByAnnotation(obj.getClass(),

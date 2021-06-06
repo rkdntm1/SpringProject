@@ -118,8 +118,7 @@ select distinct p.*, w.*
 OFFSET 0 ROWS FETCH FIRST 10 ROWS ONLY 
 	
 
-
-
+-- 검색어 'element 기본 처리'로 이 단어가 계층적으로 적용된 게시글의 총 개수를 구하시오.
 	select count(distinct p.id)
 	  from s_hashtag h, sm_ht2post m, s_post p
 	 where h.id in (

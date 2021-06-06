@@ -14,7 +14,16 @@
 			<h6 class="m-0 font-weight-bold text-primary">${boardName} 글 목록</h6>
 		</div>
 		<div class="card-body">
-		<button id="btnRegisterPost">글쓰기</button>
+		<!-- Paging 이벤트에서 서버로 요청보낼 인자들을 관리합니다. -->
+			<form id='frmSearching' action='/post/listBySearch' method='get'>
+				<input type="text" name="searching" value="${pagenation.searching}">
+				<button id="btnSearch" class='btn btn-default'>검색</button>	
+				
+				<input type="hidden" name="boardId" value="${boardId}">
+				<input type="hidden" name="pageNumber" value="${pagenation.pageNumber}">
+				<input type="hidden" name="amount" value="${pagenation.amount}">
+			</form>
+			<button id="btnRegisterPost">글쓰기</button>
 			
 			<div class="table-responsive">
 				<table class="table table-bordered" id="dataTable" width="100%"
@@ -98,12 +107,6 @@
 </div>
 <!-- End of Main Content -->
 
-<!-- Paging 이벤트에서 서버로 요청보낼 인자들을 관리합니다. -->
-<form id='frmPaging' action='/post/list' method='get'>
-	<input type="hidden" name="boardId" value="${boardId}">
-	<input type="hidden" name="pageNumber" value="${pagenation.pageNumber}">
-	<input type="hidden" name="amount" value="${pagenation.amount}">
-</form>
 <%@include file="../includes/footer.jsp"%>
 
 <script>
@@ -132,22 +135,36 @@ $(document).ready(function(){
 		$("#myModal").modal("show");
 	}
 	
+	var frmSearching = $('#frmSearching');
+	$('#btnSearch').on('click', function(eInfo){
+		eInfo.preventDefault();
+		
+		//공백으로 검색했을시(파괴자) 오류발생하여 trim을 통하여 해결
+		if ($('input[name="searching"]').val().trim() === '') { // 검색어 입력 없이 검색 눌렀을시 메세지 호출
+			alert('검색어를 입력하세요');
+			return;
+		}
+		//신규 조회이므로 1쪽을 보여줘야합니다.
+		$("input[name='pageNumber']").val("1"); // 검색했을때 1페이지로 이동시키기
+		
+		frmSearching.submit();
+	});
+	
 	/* 페이징 처리에서 특정 쪽 번호를 클릭 하였을 때 해당 페이지의 정보를 조회하여 목록을 재 출력해 줍니다.*/
-	var frmPaging = $('#frmPaging');
 	$('.page-item a').on('click',function(eInfo){
 		eInfo.preventDefault();
 		$("input[name='pageNumber']").val($(this).attr('href'));
-		frmPaging.submit();
+		frmSearching.submit();
 	});
 	
 	/* 특정 게시물에 대한 상세 조회 처리 */
 	$('.anchor4post').on('click',function(e) {
 		e.preventDefault();
 		var postId = $(this).attr('href');
-		frmPaging.append("<input name='postId' type='hidden' value='" + postId + "'>");
-		frmPaging.attr('action', '/post/readPost');
-		frmPaging.attr('method', 'get');
-		frmPaging.submit();
+		frmSearching.append("<input name='postId' type='hidden' value='" + postId + "'>");
+		frmSearching.attr('action', '/post/readPost');
+		frmSearching.attr('method', 'get');
+		frmSearching.submit();
 	});
 });
 </script>

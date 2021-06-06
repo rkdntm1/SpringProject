@@ -1,18 +1,36 @@
 package www.dream.com.framwork.test;
 
-import static org.junit.Assert.*;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 
 import www.dream.com.framwork.langPosAnalyzer.PosAnalyzer;
-import www.dream.com.framwork.util.ComparablePair;
 
 public class TestPosAnalyzer {
 
+	//@Test
+	public void testString() {
+		Map<String, Integer> map = PosAnalyzer.getHashTags("안녕하세요! 홍길동님");
+		for (String k : map.keySet()) {
+			System.out.println(k + " : " + map.get(k));
+		}
+	}
+	
 	@Test
+	public void testList() {
+		List<String> data = new ArrayList<>();
+		data.add("안녕하세요! 홍길동님");
+		data.add("홍길동전");
+		data.add("조선시대");
+		Map<String, Integer> map = PosAnalyzer.getHashTags(data);
+		for (String k : map.keySet()) {
+			System.out.println(k + " : " + map.get(k));
+		}
+	}
+	
+	//@Test
 	public void test() {
 		Post post = new Post();
 		post.setTitle("질문");

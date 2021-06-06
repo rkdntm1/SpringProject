@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,10 @@ public class PostService {
 		return postMapper.getTotalCount(boardId);
 	}
 	
+	public long getSearchTotalCount(@Param("boardId") int boardId, @Param("cri") Criteria cri) {
+		return postMapper.getSearchTotalCount(boardId, cri);
+	}
+	
 	/*
 	 * mapper 함수의 인자 개수가 여러개 일 경우 필수적으로 @Param을 넣야합니다. 이를 실수하지 않기 위하여 한개여도 그냥 명시적으로
 	 * 넣어주자
@@ -38,6 +43,10 @@ public class PostService {
 		return postMapper.getList(boardId, cri);
 	}
 
+	public List<PostVO> getListByHashTag(int boardId, Criteria cri) {
+		return postMapper.getListByHashTag(boardId, cri);
+	}
+	
 	/** id 값으로 Post 객체 조회 */
 	public PostVO findPostById(String id) {
 		return postMapper.findPostById(id);

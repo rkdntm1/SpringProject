@@ -5,7 +5,6 @@ import java.util.List;
 
 import www.dream.com.framwork.langPosAnalyzer.HashTarget;
 
-@HashTarget
 public class Party {
 	private String name;
 	

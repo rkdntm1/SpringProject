@@ -23,6 +23,8 @@ import www.dream.com.framwork.classAnalyzer.ClassAnalyzer;
 public class PosAnalyzer {
 	private static Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
 	
+	/** 주어진 객체에서 각종 속성 및 함수위에 @HashTarget를 달아서 노출시킨 정보를 바탕으로
+	 * 단어 분석기를 통하여 나온 것들을 출현 횟수까지 찾아 반환*/
 	public static Map<String, Integer> getHashTags(Object obj) {
 		Map<String, Integer> ret = new HashMap<>();
 		getHashTags(obj, ret);
@@ -31,81 +33,45 @@ public class PosAnalyzer {
 	}
 	
 	private static void getHashTags(Object obj, Map<String, Integer> map) {
-		// obj 클래스를 분석하여 HashTag Annotation를 찾아서 AccessibleObject 목록으로 반환하기
-		List<AccessibleObject> listFeature =  ClassAnalyzer.findFeatureByAnnotation(obj.getClass(),
-				HashTarget.class);
-		
-		for (AccessibleObject ao : listFeature) {
-			if (ao instanceof Field) {
-				Field field = (Field) ao;
-				Class type = field.getType();
-				Annotation anno = type.getAnnotation(HashTarget.class);
-				if (type == String.class) { // filed에 적용되어있는 타입이 String 타입이 아니면
+		if (obj == null) {
+			return;
+		} else if (obj instanceof String) {
+			analyzeHashTag((String) obj, map);
+		} else if (obj instanceof Iterable) {
+			((Iterable) obj).forEach(ele->getHashTags(ele, map));
+		} else if (obj instanceof Map) {
+			((Map) obj).entrySet().forEach(ele->getHashTags(ele, map)); // entrySet : map의 value를 가져옴  vs keySet : map의 key
+		} else {
+			List<AccessibleObject> listFeature =  ClassAnalyzer.findFeatureByAnnotation(obj.getClass(),
+					HashTarget.class);
+			
+			for (AccessibleObject ao : listFeature) {
+				if (ao instanceof Field) {
+					Field field = (Field) ao;
 					try {
 						field.setAccessible(true);
-						String anlysisTargetString = (String) field.get(obj);
-						// anlysisTargetString의 문자열을 분석해서 ret에 담아주자.
-						analyzeHashTag(anlysisTargetString, map); 
+						Object fieldValue = field.get(obj);
+						getHashTags(fieldValue, map);
 					} catch (IllegalArgumentException | IllegalAccessException e) {
-						e.printStackTrace();
 					}
-				} else if (type == List.class) {
+					
+				} else if (ao instanceof Method) {
+					Method method = (Method) ao;
 					try {
-						field.setAccessible(true);
-						Object attachObj = field.get(obj); // attachObj : writer
-						for (Object contained : (List) attachObj) {
-							getHashTags(contained, map);
-						}
-					} catch (IllegalArgumentException | IllegalAccessException e) {
-						e.printStackTrace();
-					}
-				} else if (anno != null) { // filed에 적용되어있는 타입이 String 타입이 아니면
-					try {
-						field.setAccessible(true);
-						Object attachObj = field.get(obj); // attachObj : writer
-					} catch (IllegalArgumentException | IllegalAccessException e) {
-						e.printStackTrace();
-					}
-				}
-			} else if (ao instanceof Method) {
-				Method method = (Method) ao;
-				Class type = method.getReturnType();
-				Annotation anno = type.getAnnotation(HashTarget.class);
-				if (type == String.class) { // filed에 적용되어있는 타입이 String 타입이 아니면
-					try {
-						String anlysisTargetString = (String) method.invoke(obj, null);
-						// anlysisTargetString의 문자열을 분석해서 ret에 담아주자.
-						analyzeHashTag(anlysisTargetString, map);
+						Object returnValue = method.invoke(obj, null);
+						getHashTags(returnValue, map);
 					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-						e.printStackTrace();
-					}
-				} else if (type == List.class) {
-					try {
-						Object attachObj = method.invoke(obj, null); // attachObj : writer
-						for (Object contained : (List) attachObj) {
-							getHashTags(contained, map);
-						}
-					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-						e.printStackTrace();
-					}
-				} else if (anno != null) { // filed에 적용되어있는 타입이 String 타입이 아니면
-					try {
-						Object attachObj =  method.invoke(obj, null);
-						if (attachObj instanceof List) { //contactPoint 경우
-							for (Object contained : (List) attachObj) {
-								getHashTags(contained, map);
-							}
-						} else {
-							getHashTags(attachObj, map);						
-						}
-					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-						e.printStackTrace();
 					}
 				}
 			}
 		}
 	}
 	
+	/**
+	 * 품사 분석기인 Komoran을 활용하여 지정한 품사들을 대상으로 몇번 나타났는지 까지 정보를 모아준다.
+	 * @param anlysisTargetString
+	 * @param ret
+	 */
 	private static void analyzeHashTag(String anlysisTargetString, Map<String, Integer> ret) {
 		if (anlysisTargetString == null)
 			return;

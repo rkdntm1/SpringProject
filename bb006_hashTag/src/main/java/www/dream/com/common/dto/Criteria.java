@@ -6,6 +6,9 @@ import lombok.Data;
 public class Criteria {
 	private static final float PAGENATION_TOTAL = 10;
 	
+	/** 검색어 뭉치. 예시) "내사랑 이오" */
+	private String searching; 
+	
 	private int pageNumber;	// 현재 쪽 번호
 	private int amount; 	// 쪽 당 보여줄 데이터 건수
 
@@ -35,5 +38,10 @@ public class Criteria {
 		prev = startPage > 1;
 		next = endPage < realEnd;
 		
+	}
+	
+	/** searching이 null 이면 새로운 배열을 만들고 있으면 공백을 기준으로 분할해서 배열로 받음*/
+	public String[] getSearchingHashtags() {
+		return searching == null ? new String[] {} : searching.split(" ");
 	}
 }

@@ -9,7 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 @Retention(RUNTIME)
-@Target({ TYPE, FIELD, METHOD })
+@Target({ FIELD, METHOD })
 public @interface HashTarget {
 
 }

@@ -30,13 +30,26 @@ public class PostController {
 
 	/** 특정 게시판에 등록되어 있는 게시글을 목록으로 조회하기  void:/post/list.jsp로 변환 */
 	@GetMapping(value="list")
-	public void listPost(@RequestParam("boardId") int boardId, @ModelAttribute("pagenation") Criteria fromUser, Model model) {
+	public void listPost(@RequestParam("boardId") int boardId,
+			@ModelAttribute("pagenation") Criteria fromUser, Model model) {
 		model.addAttribute("listPost", postService.getList(boardId, fromUser));
 		model.addAttribute("boardId", boardId);
 		model.addAttribute("boardName", boardService.getBoard(boardId).getName());
 		//java beans 규약에따라서 기본생성자와 setter가 발동되기때문에 11번 쪽으로 넘어가지지 않기때문에 기존 정보를
 		//가지고 새로운 객체를 만들어 줘서 계산 처리를 한다.
 		fromUser.setTotal(postService.getTotalCount(boardId));
+	}
+	
+	@GetMapping(value="listBySearch")
+	public String listPostBySearch(@RequestParam("boardId") int boardId,
+			@ModelAttribute("pagenation") Criteria fromUser, Model model) {
+		model.addAttribute("listPost", postService.getListByHashTag(boardId, fromUser));
+		model.addAttribute("boardId", boardId);
+		model.addAttribute("boardName", boardService.getBoard(boardId).getName());
+		//java beans 규약에따라서 기본생성자와 setter가 발동되기때문에 11번 쪽으로 넘어가지지 않기때문에 기존 정보를
+		//가지고 새로운 객체를 만들어 줘서 계산 처리를 한다.
+		fromUser.setTotal(postService.getSearchTotalCount(boardId, fromUser));
+		return "post/list";
 	}
 
 	@GetMapping(value={"readPost", "modifyPost"})

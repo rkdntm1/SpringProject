@@ -18,4 +18,9 @@ public class StringUtil {
 		}
 		return ret;
 	}
+	
+	/** 검색 값이 있는지 확인 */
+	public static boolean hasInfo(String str) {
+		return str != null && ! str.trim().isEmpty(); 
+	}
 }

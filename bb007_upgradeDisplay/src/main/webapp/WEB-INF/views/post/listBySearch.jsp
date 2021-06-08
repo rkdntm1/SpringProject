@@ -3,9 +3,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ page import="www.dream.com.bulletinBoard.model.PostVO" %>
-<%@ page import="www.dream.com.framwork.printer.TableHeader" %>
 
 <%@include file="../includes/header.jsp"%>
+
+<!-- TableHeader에 정의된 static method를 사용하기 위해 정의 함 -->
+<jsp:useBean id="tablePrinter" class="www.dream.com.framework.printer.TablePrinter"/>
+
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -32,18 +35,20 @@
 				<table class="table table-bordered" id="dataTable" width="100%"
 					cellspacing="0">
 					<thead>
-						<tr><%= TableHeader.print(PostVO.class) %> </tr>
+						<tr><%=tablePrinter.printHeader(PostVO.class)%> </tr>
 					</thead>
 					
 					<tbody>
 						<c:forEach items="${listPost}" var="post">
 							<tr>
-								<td>
-									<!-- id는 1개만 class는 여러개의 객체 가능 -->
+								${tablePrinter.printTableRow(post, "anchor4post")}
+								<!--
+								<td>						
 									<a class="anchor4post" href="${post.id}">${post.title}</a></td>
 								<td>${post.writer.name}</td>
 								<td>${post.readCnt}</td>
-								<td><fmt:formatDate pattern="yyyy-MM-dd" value="${post.updateDate}"/>
+								<td><fmt:formatDate pattern="yyyy-MM-dd" value="${post.updateDate}"/></td>
+								-->
 							</tr>
 						</c:forEach>
 					</tbody>

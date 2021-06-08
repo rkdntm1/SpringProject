@@ -3,7 +3,7 @@ package www.dream.com.common.dto;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import lombok.Data;
-import www.dream.com.framwork.util.StringUtil;
+import www.dream.com.framework.util.StringUtil;
 
 @Data
 public class Criteria {

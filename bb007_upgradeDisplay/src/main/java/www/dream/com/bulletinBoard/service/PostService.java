@@ -13,8 +13,8 @@ import www.dream.com.bulletinBoard.model.BoardVO;
 import www.dream.com.bulletinBoard.model.PostVO;
 import www.dream.com.bulletinBoard.persistence.PostMapper;
 import www.dream.com.common.dto.Criteria;
-import www.dream.com.framwork.langPosAnalyzer.PosAnalyzer;
-import www.dream.com.framwork.util.StringUtil;
+import www.dream.com.framework.langPosAnalyzer.PosAnalyzer;
+import www.dream.com.framework.util.StringUtil;
 import www.dream.com.hashTag.model.HashtagVO;
 import www.dream.com.hashTag.persistence.HashTagMapper;
 

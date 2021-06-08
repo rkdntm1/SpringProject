@@ -5,7 +5,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import www.dream.com.bulletinBoard.model.PostVO;
-import www.dream.com.framwork.langPosAnalyzer.PosAnalyzer;
+import www.dream.com.framework.langPosAnalyzer.PosAnalyzer;
 import www.dream.com.party.model.Admin;
 import www.dream.com.party.model.ContactPoint;
 

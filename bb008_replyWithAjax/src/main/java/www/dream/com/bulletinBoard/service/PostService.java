@@ -11,17 +11,23 @@ import org.springframework.stereotype.Service;
 
 import www.dream.com.bulletinBoard.model.BoardVO;
 import www.dream.com.bulletinBoard.model.PostVO;
-import www.dream.com.bulletinBoard.persistence.PostMapper;
+import www.dream.com.bulletinBoard.persistence.ReplyMapper;
 import www.dream.com.common.dto.Criteria;
 import www.dream.com.framework.langPosAnalyzer.PosAnalyzer;
 import www.dream.com.framework.util.StringUtil;
 import www.dream.com.hashTag.model.HashtagVO;
 import www.dream.com.hashTag.persistence.HashTagMapper;
 
+/**
+ * ReplyVO와 PostVO의 클래스 설계도를 기반으로하는 것이며
+ * 해당 Table을 Top-전략으로 통합하여 만들었기에 ReplyMapper는 통합해놓았고.
+ * PostService를 ReplyService와 분리하였다.
+ * @author YongHoon Kim
+ */
 @Service
 public class PostService {
 	@Autowired
-	private PostMapper postMapper;
+	private ReplyMapper postMapper;
 	
 	@Autowired
 	private HashTagMapper hashTagMapper;
@@ -30,7 +36,7 @@ public class PostService {
 		if (cri.hasSearching()) { // 검색이 있을때
 			return postMapper.getSearchTotalCount(boardId, cri);	
 		} else {
-			return postMapper.getTotalCount(boardId);	
+			return postMapper.getTotalCount(boardId, PostVO.DESCRIM4POST);	
 		}
 	}
 
@@ -44,7 +50,7 @@ public class PostService {
 	
 	/** id 값으로 Post 객체 조회 */
 	public PostVO findPostById(String id) {
-		return postMapper.findPostById(id);
+		return (PostVO) postMapper.findReplyById(id);
 	}
 	
 	/** 주어진 board객체와 post객체를 가지고 등록시킴 */
@@ -106,6 +112,6 @@ public class PostService {
 
 	/** id 값으로 Post 객체 삭제 */
 	public boolean deletePostById(String id) {
-		return postMapper.deletePostById(id) == 1;
+		return postMapper.deleteReplyById(id) == 1;
 	}
 }

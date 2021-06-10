@@ -6,9 +6,6 @@
 
 <%@include file="../includes/header.jsp"%>
 
-<!-- TableHeader에 정의된 static method를 사용하기 위해 정의 함 -->
-<jsp:useBean id="tablePrinter" class="www.dream.com.framework.printer.TablePrinter"/>
-
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -30,18 +27,27 @@
 				
 			</form>
 			
-			
 			<div class="table-responsive">
 				<table class="table table-bordered" id="dataTable" width="100%"
 					cellspacing="0">
 					<thead>
-						<tr><%=tablePrinter.printHeader(PostVO.class)%> </tr>
+						<tr>
+							<th>제목</th>
+							<th>작성자</th>
+							<th>조회수</th>
+							<th>수정일</th>
+						</tr>
 					</thead>
 					
 					<tbody>
 						<c:forEach items="${listPost}" var="post">
 							<tr>
-								${tablePrinter.printTableRow(post, "anchor4post")}
+								<td>
+									<!-- id는 1개만 class는 여러개의 객체 가능 -->
+									<a class="anchor4post" href="${post.id}">${post.title}</a></td>
+								<td>${post.writer.name}</td>
+								<td>${post.readCnt}</td>
+								<td><fmt:formatDate pattern="yyyy-MM-dd" value="${post.updateDate}"/>
 							</tr>
 						</c:forEach>
 					</tbody>

@@ -2,8 +2,6 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-
-<jsp:useBean id="tablePrinter" class="www.dream.com.framework.printer.TablePrinter"/>
 	
 <div class="form-group">
 	<label>아이디</label> <input name="id" value="${post.id}" class="form-control" readonly>
@@ -25,7 +23,7 @@
 <div class="form-group">
 	<label>조회수</label> <input value="${post.readCnt}" readonly>
 	<label>좋아요</label> <input value="${post.likeCnt}" readonly>
-	<label>조회수</label>	<input value="${post.dislikeCnt}" readonly>
+	<label>싫어요</label>	<input value="${post.dislikeCnt}" readonly>
 </div>
 
 <div class="form-group">

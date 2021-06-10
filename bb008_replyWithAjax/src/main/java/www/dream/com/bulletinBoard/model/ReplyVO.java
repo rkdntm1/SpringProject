@@ -4,9 +4,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import www.dream.com.common.model.CommonMngVO;
 import www.dream.com.framework.langPosAnalyzer.HashTarget;
-import www.dream.com.framework.printer.AnchorTarget;
-import www.dream.com.framework.printer.ClassPrintTarget;
-import www.dream.com.framework.printer.PrintTarget;
 import www.dream.com.party.model.Party;
 
 /**
@@ -15,8 +12,8 @@ import www.dream.com.party.model.Party;
  */
 @Data
 @NoArgsConstructor
-@ClassPrintTarget
 public class ReplyVO extends CommonMngVO {
+	public static final String DESCRIM4REPLY = "reply";
 	/** DB 함수 get_id 참조 */
 	public static final int ID_LENGTH = 5;
 	

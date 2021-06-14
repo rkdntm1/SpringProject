@@ -49,7 +49,7 @@
 	   and h.id = m.hashtag_id
 	   and m.post_id = p.id
 	   and p.board_id =  #{boardId}
-	   and p.descrim = #{PostVO.DESCRIM4POST}
+	   and p.descrim = 'post' <!-- #{PostVO.DESCRIM4POST} -->
 	</sql>
 
 	<!-- public long getTotalCount(@Param("boardId") int boardId, @Param("descrim") String descrim); -->
@@ -138,7 +138,8 @@
 		delete from s_reply where id like #{id} || '%'
 	</delete>
 	
-	<!-- 댓글 처리 함수 정의 영역 -->
+	<!-- ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤ 댓글 처리 함수 정의 영역 ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤ -->
+	
 	<!-- public List<ReplyVO> getReplyListWithPaging(@Param("originalId") String originalId,
 			@Param("idLength") int idLength, @Param("cri") Criteria cri); -->
 	<select id="getReplyListWithPaging" resultMap="rmReply"> 

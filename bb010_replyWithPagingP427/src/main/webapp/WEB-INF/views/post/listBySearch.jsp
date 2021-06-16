@@ -48,25 +48,8 @@
 				
 				<!-- 페이징 처리 -->
 				<div class='fa-pull-right'>
-					<ul id='ulPagination' class='pagination'>
-						<c:if test="${pagenation.prev}">
-							<li class="page-item previous">
-								<a class='page-link' href="${pagenation.startPage - 1}">&lt;&lt;</a>
-							</li>
-						</c:if>
-						<c:forEach var="num" begin="${pagenation.startPage}" end="${pagenation.endPage}">
-							<li class='page-item ${pagenation.pageNumber == num ? "active" : ""}'>
-								<a class='page-link' href="${num}">${num}</a>
-							</li>
-						</c:forEach>
-						<c:if test="${pagenation.next}">
-							<li class="page-item next">
-								<a class='page-link' href="${pagenation.endPage + 1}">&gt;&gt;</a>
-							</li>
-						</c:if>
-					</ul>
+					${pagenation.pagingDiv}
 				</div>
-
 				
 				<!-- Modal -->
 				<div class="modal fade" id="myModal" tabindex="-1" role="dialog"

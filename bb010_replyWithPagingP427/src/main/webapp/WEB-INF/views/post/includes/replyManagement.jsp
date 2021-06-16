@@ -94,8 +94,8 @@
 					strLiTags += '</li>';
 				}
 				ulReply.html(strLiTags);
-				
-				displayPaging(criteria);
+
+				replyPaging.html(criteria.pagingDiv);
 			},
 			function(errMsg) {
 				alert("댓글 등록 오류 : " + errMsg);
@@ -215,30 +215,6 @@
 		);
 	});
 	
-	/** 댓글 페이징 화면 처리 */
-	function displayPaging(cri) {
-		strLiTags = "<ul id='ulPagination' class='pagination'>";
-		if (cri.prev) {
-			strLiTags += "<li class='page-item previous'>";
-			strLiTags += "<a class='page-link' href='" + (cri.startPage - 1)+ "'>&lt;&lt;</a>";
-			strLiTags += "</li>";
-		}
-		
-		for (var num = cri.startPage; num <=cri.endPage; num++) {
-			strLiTags += "<li class='page-item " + (cri.pageNumber == num ? "active" : "") + "'>";
-			strLiTags += "<a class='page-link' href=" + num + ">" + num + "</a>";
-			strLiTags += "</li>";
-		}
-		
-		if (cri.next) {
-			strLiTags += "<li class='page-item next'>";
-			strLiTags += "<a class='page-link' href='" + (cri.endPage + 1)+ "'>&gt;&gt;</a>";
-			strLiTags += "</li>";
-		}
-		strLiTags += "</ul>";
-	
-		replyPaging.html(strLiTags);
-	}
 	
 	/** 특정 댓글 페이지 선택시 처리 */
 	replyPaging.on("click", "li a", function(e) {

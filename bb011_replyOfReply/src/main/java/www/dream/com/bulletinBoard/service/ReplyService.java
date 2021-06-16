@@ -1,6 +1,8 @@
 package www.dream.com.bulletinBoard.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,22 @@ public class ReplyService {
 		cri.setTotal(replyMapper.getReplyCount(originalId, idLength));
 		ComparablePair<Criteria, List<ReplyVO>> ret = new ComparablePair<>(cri, replyMapper.getReplyListWithPaging(originalId, idLength, cri) );
 		return ret;
+	}
+	
+	public List<ReplyVO> getReplyListOfReply(String replyId) {
+		int idLength = replyId.length() + ReplyVO.ID_LENGTH;
+		List<ReplyVO> justRead = replyMapper.getReplyListOfReply(replyId, idLength);
+		
+		Map<String, ReplyVO> map = new HashMap<>();
+		for (ReplyVO reply : justRead) {
+			map.put(reply.getId(), reply);
+			if (map.containsKey(reply.getOriginalId())) {
+				map.get(reply.getOriginalId()).getListReply().add(reply);
+			}
+			
+		}
+		
+		return null;
 	}
 	
 	public ReplyVO findReplyById(String id) {

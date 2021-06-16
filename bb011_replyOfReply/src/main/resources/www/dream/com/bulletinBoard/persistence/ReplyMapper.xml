@@ -8,7 +8,8 @@
 		 id="rmReply"
 		 extends="www.dream.com.common.persistence.CommonMngVOMapper.commonMngVOMap">
 		<id property="id" column="id"></id>
-		<result property="content" column="content"></result>
+		<result property="content" column="content"></result>		
+		<result property="replyCnt" column="reply_cnt"></result>
 		<association property="writer" columnPrefix="w_"
 			resultMap="www.dream.com.party.persistence.PartyMapper.partyMap">
 		</association>
@@ -157,14 +158,36 @@
 	<select id="getReplyListWithPaging" resultMap="rmReply"> 
 	select p.*, w.name w_name, w.descrim w_descrim
 	  from (
-    	   SELECT *
- 	     <include refid="replyCommon"></include>
-		    ORDER BY id DESC
-		   OFFSET (#{cri.pageNumber} - 1) * #{cri.amount} ROWS FETCH FIRST #{cri.amount} ROWS ONLY
+	  	select r.*, rc.reply_cnt
+          from (
+                select r.id, count(*) - 1 reply_cnt
+                  FROM s_reply r left outer join s_reply rr 
+                  on rr.id like r.id || '%'
+                 where r.id in (
+                      SELECT id
+                      <include refid="replyCommon"></include>
+                    )	 	     	 	     
+	 	        group by r.id) rc, s_reply r
+         where rc.id = r.id
+         ORDER BY r.id DESC
+        OFFSET (#{cri.pageNumber} - 1) * #{cri.amount} ROWS FETCH FIRST #{cri.amount} ROWS ONLY
 		) p, s_party w
 	 WHERE p.writer_id = w.user_id
 	</select>
-		
+	
+	<!-- public List<ReplyVO> getReplyListOfReply(@Param("originalId") String originalId, @Param("idLength") int idLength); -->
+	<select id="getReplyListOfReply" resultMap="rmReply"> 
+    select p.*, w.name w_name, w.descrim w_descrim
+	  from (
+           SELECT *
+           FROM s_reply
+	      where id like #{originalId} || '%'
+	        and length(id) >= #{idLength}
+ 	      ORDER BY id
+		) p, s_party w
+	 WHERE p.writer_id = w.user_id        
+	</select>
+	
 	<!-- public int insertReply(@Param("originalId") String originalId, @Param("reply") ReplyVO reply); -->
 	<insert id="insertReply">
 		<selectKey keyProperty="reply.id" order="BEFORE"

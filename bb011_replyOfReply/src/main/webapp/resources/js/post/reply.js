@@ -8,23 +8,40 @@ CallBack 함수 : 특정 이벤트시에 이를 불러 준다.
 */
 var replyService = (function() {
 	function getList(orgIdAndPage, successCallBack, errorCallBack) {
-			var page = orgIdAndPage.page || 1;
-			//https://api.jquery.com/jquery.getjson/
-			$.getJSON(
-				"/replies/pages/" + orgIdAndPage.orgId + "/" + page,
-				function(listReplyWithCount) {
-					if (successCallBack) {
-						successCallBack(listReplyWithCount);
-					}
+		var page = orgIdAndPage.page || 1;
+		//https://api.jquery.com/jquery.getjson/
+		$.getJSON(
+			"/replies/pages/" + orgIdAndPage.orgId + "/" + page,
+			function(listReplyWithCount) {
+				if (successCallBack) {
+					successCallBack(listReplyWithCount);
 				}
-			).fail(
-				function(xhr, status, errMsg){
-					if (errorCallBack) {
-						errorCallBack(errMsg);
-					}
+			}
+		).fail(
+			function(xhr, status, errMsg){
+				if (errorCallBack) {
+					errorCallBack(errMsg);
 				}
-			);
-		}
+			}
+		);
+	}
+		
+	function getListOfReply(replyId, successCallBack, errorCallBack) {
+		$.getJSON(
+			"/replies/pages/" + replyId,
+			function(listAllReplyOfReply) {
+				if (successCallBack) {
+					successCallBack(listAllReplyOfReply);
+				}
+			}
+		).fail(
+			function(xhr, status, errMsg){
+				if (errorCallBack) {
+					errorCallBack(errMsg);
+				}
+			}
+		);
+	}
 
 	function get(replyId, successCallBack, errorCallBack) {
 		$.getJSON(
@@ -102,6 +119,7 @@ var replyService = (function() {
 	//정의된 함수를 알려 주는 곳
 	return {
 		getReplyList:getList,
+		getReplyListOfReply:getListOfReply,
 		getReply:get,
 		addReply:add,
 		updateReply:update,

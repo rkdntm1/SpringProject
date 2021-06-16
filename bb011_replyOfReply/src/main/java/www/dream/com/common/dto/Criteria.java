@@ -67,6 +67,36 @@ public class Criteria implements Comparable<Criteria>{
 				.queryParam("searching", searching);
 	}
 
+	/**
+	 * 모든 목록페이지에서 페이징처리용 HTML tag들을 각자 출력하는 중복성을 제거하여
+	 * 이곳에서 통합적으로 서비스 할 수 있도록 모듈화시켰다. 이로써 코드량의 절감. 유지보수성의 향상
+	 * @return
+	 */
+	public String getPagingDiv() {
+		StringBuilder sb = new StringBuilder("<ul id='ulPagination' class='pagination'>");
+		
+		if (this.prev) {
+			sb.append("<li class='page-item previous'>");
+			sb.append("<a class='page-link' href='" + (this.startPage - 1) + "'>&lt;&lt;</a>");
+			sb.append("</li>");
+		}
+		
+		for (int num = this.startPage; num <= this.endPage; num++) {
+			sb.append("<li class='page-item " + (this.pageNumber == num ? "active" : "") + "'>");
+			sb.append("<a class='page-link' href=" + num + ">" + num + "</a>");
+			sb.append("</li>");
+		}
+		
+		if (this.next) {
+			sb.append("<li class='page-item next'>");
+			sb.append("<a class='page-link' href='" + (this.endPage + 1)+ "'>&gt;&gt;</a>");
+			sb.append("</li>");
+		}
+		sb.append("</ul>");
+		
+		return sb.toString();
+	}
+	
 	@Override
 	public int compareTo(Criteria o) {
 		int ret = pageNumber - o.pageNumber;

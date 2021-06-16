@@ -1,5 +1,8 @@
 package www.dream.com.bulletinBoard.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import www.dream.com.common.model.CommonMngVO;
@@ -26,9 +29,13 @@ public class ReplyVO extends CommonMngVO {
 	@HashTarget @PrintTarget(order=130, caption="내용")
 	private String content;	//내용
 	
+	private int replyCnt; 	//대댓글 수
+	
 	//navigabillity 항해가능성 - 객체 접근성
 	@HashTarget 
 	private Party writer;
+	
+	private List<ReplyVO> listReply = new ArrayList<>();
 	
 	public ReplyVO(String parentId, String content, Party writer) {
 		this.content = content;
@@ -38,6 +45,14 @@ public class ReplyVO extends CommonMngVO {
 	public ReplyVO(String content, Party writer) {
 		this.content = content;
 		this.writer = writer;
+	}
+	
+	public int getDepth() {
+		return id.length() / ID_LENGTH;
+	}
+	
+	public String getOriginalId() {
+		return id.substring(0, id.length() - ID_LENGTH); 
 	}
 	
 	@Override

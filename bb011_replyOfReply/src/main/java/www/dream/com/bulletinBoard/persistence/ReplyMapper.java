@@ -38,6 +38,7 @@ public interface ReplyMapper {
 			@Param("idLength") int idLength);
 	public List<ReplyVO> getReplyListWithPaging(@Param("originalId") String originalId,
 			@Param("idLength") int idLength, @Param("cri") Criteria cri);
+	public List<ReplyVO> getReplyListOfReply(@Param("originalId") String originalId, @Param("idLength") int idLength);
 	/** id 값으로 Post 객체 조회 */
 	public int insertReply(@Param("originalId") String originalId, @Param("reply") ReplyVO reply);
 	/** 댓글 수정 처리 */

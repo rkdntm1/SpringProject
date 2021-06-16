@@ -40,6 +40,12 @@ public class ReplyController {
 		return new ResponseEntity<>(listReplyWithCount, HttpStatus.OK);
 	}
 	
+	@GetMapping(value="pages/{replyId}")
+	public ResponseEntity<List<ReplyVO>> getReplyListOfReply(
+			@PathVariable("replyId") String replyId) {
+		return new ResponseEntity<>(replyService.getReplyListOfReply(replyId), HttpStatus.OK);
+	}
+	
 	@GetMapping(value="/{id}")
 	public ResponseEntity<ReplyVO> findReplyById(
 			@PathVariable("id") String id) {

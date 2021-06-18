@@ -170,7 +170,11 @@
 		modalReply.data("original_id", clickedLi.data("reply_id")); // 대댓글 모달창띄울때 댓글 id를 데이터로 달아줌
 		
 		//추가 버튼을 누른 대대댓이 포함된 댓글
-		modalReply.data("display_target", clickedLi.parents("#ulReply li").last());
+		var grandFather = clickedLi.parents("#ulReply li").last();
+		if (grandFather.length == 0)
+			modalReply.data("display_target", clickedLi);
+		else
+			modalReply.data("display_target", grandFather);
 		
 		showModalForCreate()
 	});
@@ -261,7 +265,7 @@
 			},
 			function(errMsg) {
 				alert("댓글 수정 오류 : " + errMsg);
-			}
+			} 
 		);
 	});
 	
@@ -283,7 +287,7 @@
 	});
 	
 	function displayUpdatedContents(targetPage) {
-		displayTargetLi = modalReply.data("display_target");
+		displayTargetLi = modalReply.data("display_target"); 
 		if (displayTargetLi == null) {
 			showReplyList(targetPage);	
 		} else {
@@ -303,6 +307,7 @@
 					alert("댓글 조회 오류 : " + errMsg);
 				}
 			);
+			
 			replyService.getAllReplyCountOfReply(
 				reply_id,
 				function(cnt) {
@@ -310,10 +315,10 @@
 					var iTagForCntDisplay = $(displayTargetLi).find("i"); 
 					var strongTagForCntDisplay = $(displayTargetLi).find("strong");
 					if (cnt == 0) {
-						if (iTagForCntDisplay != null)
+						if (iTagForCntDisplay.length != 0)
 							$(iTagForCntDisplay).remove();
 					} else {
-						if (iTagForCntDisplay == null) {
+						if (iTagForCntDisplay.length == 0) {
 							strongTagForCntDisplay.before("<i>[" +  cnt + "]</i>"); 
 						} else {
 							iTagForCntDisplay.html("[" + cnt + "]");

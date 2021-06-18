@@ -151,10 +151,9 @@
 	<select id="getAllReplyCount" resultType="_int"> 
 		select count(*)
 			FROM s_reply
-	 		where id like #{originalId} || '%'
+	 		where id like #{replyId} || '%'
 	   		and length(id) >= #{idLength}
 	</select>		
-	
 	
 	<!-- public int getReplyCount(@Param("originalId") String originalId,
 			@Param("idLength") int idLength); -->

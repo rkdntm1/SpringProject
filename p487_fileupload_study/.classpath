@@ -35,7 +35,7 @@
 			<attribute name="owner.project.facets" value="#system#;jst.web"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/SpringWorkSpace/external_libs/ojdbc8-21.1.0.0.jar">
+	<classpathentry kind="lib" path="C:/springWorkspace/external_libs/ojdbc8-21.1.0.0.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>

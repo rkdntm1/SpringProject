@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
@@ -16,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
@@ -38,8 +37,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.gson.Gson;
-
 import net.coobird.thumbnailator.Thumbnailator;
 import www.dream.com.fileUpload.model.AttachFileVO;
 import www.dream.com.framework.util.FileUtil;
@@ -56,7 +53,7 @@ public class UploadController {
 	
 	@PostMapping(value = "upload", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public ResponseEntity<List<AttachFileVO>> uploadFilesByAjax(@RequestParam("uploadFile") MultipartFile[] uploadFiles) {
+	public ResponseEntity<List<String>> uploadFilesByAjax(@RequestParam("uploadFile") MultipartFile[] uploadFiles) {
 		List<AttachFileVO> listAttachFileVO = new ArrayList<>();
 		File uploadPath = new File(UPLOAD_FOLDER, getFolderName());
 		if (! uploadPath.exists()) {
@@ -87,7 +84,11 @@ public class UploadController {
 			}
 			listAttachFileVO.add(attachFileVO);
 		}
-		return new ResponseEntity<>(listAttachFileVO, HttpStatus.OK);
+		List<String> ret = listAttachFileVO.stream()
+				.map(vo -> vo.getJson())
+				.collect(Collectors.toList());
+		
+		return new ResponseEntity<>(ret, HttpStatus.OK);
 	}
 	
 	@GetMapping("display")

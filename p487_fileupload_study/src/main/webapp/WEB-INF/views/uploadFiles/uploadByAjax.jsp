@@ -34,28 +34,10 @@
 		</div>
 	</div>
 </body>
-	<script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="\resources\js\util\utf8.js"></script>
+
 <script type="text/javascript">
-function showImage(fileCallPath) {
-	$(".bigWrapper").css("display", "flex").show();
-	$(".bigNested").html(
-			"<img src='/uploadFiles/display?" + fileCallPath + "'>"
-			).animate({width:'100%', height:'100%'}, 1000);
-}
-
-function showVideo(fileCallPath) {
-	$(".bigWrapper").css("display", "flex").show();
-	$(".bigNested").html(
-			"<video src='/uploadFiles/display?" + fileCallPath + "' autoplay>"
-			).animate({width:'100%', height:'100%'}, 100000);
-}
-
-function showAudio(fileCallPath) {
-	$(".bigWrapper").css("display", "flex").show();
-	$(".bigNested").html(
-			"<audio src='/uploadFiles/display?" + fileCallPath + "' autoplay>"
-			).animate({width:'100%', height:'100%'}, 1000);
-}
 
 $(document).ready(function() {
 	//업로드 파일에 대한 확장자 제한하는 정규식
@@ -84,36 +66,7 @@ $(document).ready(function() {
 			data : formData,
 			type : 'post',
 			success : function (result) {
-				var liTags = "";
-				$(result).each(function (i, attachVo) {
-					if (attachVo.multimediaType === "others") {
-						liTags += "<li><a href='/uploadFiles/download" + attachVo.originalFileCallPath + "'><img src='/resources/img/attachFileIcon.png'>" + attachVo.pureFileName + "</a></li>";
-					} else {
-						var originalFileCallPath = encodeURIComponent(attachVo.originalFileCallPath.substring(1));
-						originalFileCallPath = originalFileCallPath.replace(new RegExp(/\\/g), "//");
-						
-						if (attachVo.multimediaType === "audio") {
-							liTags += "<li><a href=\"javascript: showAudio(\'" 
-									+ originalFileCallPath + "\')\"><img src='/resources/img/audioThumbnail.png'>" 
-									+ attachVo.pureFileName + "</a>" 
-									+ "<span data-attach_info=\'" + attachVo.json + "\'>X</span>" 
-									+  "</li>";
-						} else if (attachVo.multimediaType === "image") {
-							liTags += "<li><a href=\"javascript: showImage(\'" 
-									+ originalFileCallPath + "\')\"><img src='/uploadFiles/display" 
-									+ attachVo.fileCallPath + "'>" + attachVo.pureFileName + "</a>" 
-									+ "<span data-attach_info=\'" + attachVo.json + "\'>X</span>"
-									+ "</li>";
-						} else if (attachVo.multimediaType === "video") {
-							liTags += "<li><a href=\"javascript: showVideo(\'" 
-									+ originalFileCallPath + "\')\"><img src='/uploadFiles/display" 
-									+ attachVo.fileCallPath + "'>"	+ attachVo.pureFileName + "</a>"
-									+ "<span data-attach_info=\'" + attachVo.json + "\'>X</span>"
-									+ "</li>";
-						}				  
-					}
-				});
-				resultUl.append(liTags); //append 쓴이유  > 업로드 또하면 
+				showUploadedFile(result);
 				//업로드이후 청소
 				$("#uploadDiv").html(initClearStatus.html());
 			}
@@ -128,20 +81,6 @@ $(document).ready(function() {
 		}, 1000);
 	});
 	
-	//첨부 취소하기
-	$("#uploadResult").on("click", "span", function(){
-		var attach_info = $(this).data("attach_info");
-		$.ajax({
-			url : "/uploadFiles/deleteFile",
-			data : attach_info, //ajax 호출을 json형식으로 할거
-			type : 'post',
-			dataType : 'text',
-			success : function (result) {
-				alert(result);
-			}
-		});
-	});
-	
 	//업로드 파일에 대한 제약 사항을 미리 검사해줍니다.
 	function checkFileConstraints(fileName, fileSize) {
 		//크기 검사
@@ -154,6 +93,70 @@ $(document).ready(function() {
 		}
 		return true;
 	}
+	
+	function showUploadedFile(result) {
+		var liTags = "";
+		$(result).each(function (i, attachVoInJson) {
+			var attachVo = JSON.parse(decodeURL(attachVoInJson));
+			
+			if (attachVo.multimediaType === "others") {
+				liTags += "<li data-attach_info=" + attachVoInJson + "><a href='/uploadFiles/download?fileName=" 
+						+ encodeURIComponent(attachVo.originalFileCallPath) + "'><img src='/resources/img/attachFileIcon.png'>" 
+						+ attachVo.pureFileName + "</a><span>X</span></li>";
+			} else {
+				if (attachVo.multimediaType === "audio") {
+					liTags += "<li data-attach_info=" + attachVoInJson + ">"
+							+ "<a>"
+							+ "<img src='/resources/img/audioThumbnail.png'>" 
+							+ attachVo.pureFileName + "</a>" 
+							+ "<span>X</span>" 
+							+ "</li>";
+				} else if (attachVo.multimediaType === "image" || attachVo.multimediaType === "video") {
+					liTags += "<li data-attach_info=" + attachVoInJson + ">"
+							+ "<a>"
+							+ "<img src='/uploadFiles/display?fileName=" 
+							+ encodeURIComponent(attachVo.fileCallPath) + "'>" + attachVo.pureFileName + "</a>" 
+							+ "<span>X</span>"
+							+ "</li>";
+				} 	  
+			}
+		});
+		resultUl.append(liTags); //append 쓴이유  > 업로드 또하면
+	}
+	
+	// 이미지클릭시 자동재생 및 원본파일재생
+	$("#uploadResult").on("click", "a", function(){
+		var attachVo = $(this).closest("li").data("attach_info");
+		attachVo = JSON.parse(decodeURL(attachVo));
+		
+		$(".bigWrapper").css("display", "flex").show();
+		if (attachVo.multimediaType === "audio") {
+			$(".bigNested").html("<audio src='/uploadFiles/display?fileName=" +  encodeURIComponent(attachVo.originalFileCallPath) + "' autoplay>"
+					).animate({width:'100%', height:'100%'}, 1000);
+		} else if (attachVo.multimediaType === "image") {
+			$(".bigNested").html("<img src='/uploadFiles/display?fileName=" +  encodeURIComponent(attachVo.originalFileCallPath) + "'>"
+					).animate({width:'100%', height:'100%'}, 1000);
+		} else if (attachVo.multimediaType === "video") {
+			$(".bigNested").html("<video src='/uploadFiles/display?fileName=" + encodeURIComponent(attachVo.originalFileCallPath) + "' autoplay>"
+					).animate({width:'100%', height:'100%'}, 1000);	
+		}
+	});
+	
+	//첨부 취소하기
+	$("#uploadResult").on("click", "span", function(){
+		var attachVo = $(this).closest("li").data("attach_info");
+		attachVo = JSON.parse(decodeURL(attachVo));
+		
+		$.ajax({
+			url : "/uploadFiles/deleteFile",
+			data : attachVo,
+			type : 'post',
+			dataType : 'text',
+			success : function (result) {
+				alert(result);
+			}
+		});
+	});
 });
 </script>
 </html>

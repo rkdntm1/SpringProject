@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="www.dream.com.common.persistence.AttachFileVOMapper">
+	<resultMap type="www.dream.com.common.model.AttachFileVO" id="rmAttachFileVO">
+		<id property="uuid" column="uuid"></id>
+		<result property="savedFolderPath" column="saved_folder_path"></result>
+		<result property="pureFileName" column="pure_file_name"></result>
+		<result property="multimediaType" column="multimedia_type"></result>
+	</resultMap>
+</mapper>

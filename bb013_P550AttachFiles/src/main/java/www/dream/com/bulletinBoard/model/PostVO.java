@@ -1,10 +1,12 @@
 package www.dream.com.bulletinBoard.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import www.dream.com.common.model.AttachFileVO;
+import www.dream.com.common.attachFile.model.AttachFileVO;
 import www.dream.com.framework.langPosAnalyzer.HashTarget;
 import www.dream.com.framework.printer.ClassPrintTarget;
 import www.dream.com.framework.printer.PrintTarget;
@@ -38,6 +40,12 @@ public class PostVO extends ReplyVO {
 	@PrintTarget(order=100, caption="제목", withAnchor=true)
 	public String getTitleWithCnt() {
 		return title + "[" + super.replyCnt + "]";
+	}
+	
+	public List<String> getAttachList() {
+		if (listAttach == null || listAttach.isEmpty())
+			return new ArrayList<>();
+		return listAttach.stream().map(vo -> vo.getJson()).collect(Collectors.toList());
 	}
 	
 	@Override

@@ -8,10 +8,13 @@ import java.util.Set;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import www.dream.com.bulletinBoard.model.BoardVO;
 import www.dream.com.bulletinBoard.model.PostVO;
 import www.dream.com.bulletinBoard.persistence.ReplyMapper;
+import www.dream.com.common.attachFile.model.AttachFileVO;
+import www.dream.com.common.attachFile.persistence.AttachFileVOMapper;
 import www.dream.com.common.dto.Criteria;
 import www.dream.com.framework.langPosAnalyzer.PosAnalyzer;
 import www.dream.com.framework.util.StringUtil;
@@ -31,6 +34,9 @@ public class PostService {
 	
 	@Autowired
 	private HashTagMapper hashTagMapper;
+	
+	@Autowired
+	private AttachFileVOMapper attachFileVOMapper;
 
 	public long getSearchTotalCount(@Param("boardId") int boardId, @Param("cri") Criteria cri) {
 		if (cri.hasSearching()) { // 검색이 있을때
@@ -54,11 +60,18 @@ public class PostService {
 	}
 	
 	/** 주어진 board객체와 post객체를 가지고 등록시킴 */
+	@Transactional
 	public int insert(BoardVO board, PostVO post) {
 		int affectedRows = postMapper.insert(board, post);
 		Map<String, Integer> mapOccur = PosAnalyzer.getHashTags(post); // 입력해준 post 객체를 던져줘서 HashTag를 찾아 그 HashTag와 빈도수를 map으로 짝지어준다. 
 		Set<String> setHashTag = mapOccur.keySet(); // HashTag와 빈도수를 짝지어놓은 Map에 .keySet() 통하여 key값들, 즉 HashTag들을 가져와 집합으로 만들어준다.
 		createHashTagAndMapping(post, mapOccur, setHashTag);
+		
+		//첨부 파일 정보도 관리합니다. 고성능 
+		List<AttachFileVO> listAttach = post.getListAttach();
+		if (listAttach != null && ! listAttach.isEmpty()) {
+			attachFileVOMapper.insert(post.getId(), listAttach);	
+		}
 		return affectedRows;
 	}
 	

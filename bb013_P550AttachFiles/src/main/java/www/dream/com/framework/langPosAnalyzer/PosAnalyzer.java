@@ -75,6 +75,8 @@ public class PosAnalyzer {
 		if (anlysisTargetString == null)
 			return;
 		KomoranResult analyzeResultList = komoran.analyze(anlysisTargetString);
+		if (analyzeResultList == null)
+			return;
 		List<Token> tokenList = analyzeResultList.getTokenList();
 		for (Token token : tokenList) {
 			TargetPos pos = null; //품사

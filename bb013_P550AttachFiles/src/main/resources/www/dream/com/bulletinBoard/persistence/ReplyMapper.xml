@@ -27,7 +27,8 @@
 		<result property="likeCnt" column="like_cnt"></result>
 		<result property="dislikeCnt" column="dislike_cnt"></result>
 		<collection property="listAttach" columnPrefix="af_"
-		 resultMap="www.dream.com.common.persistence.AttachFileVOMapper.rmAttachFileVO"></collection>
+		 	resultMap="www.dream.com.common.attachFile.persistence.AttachFileVOMapper.rmAttachFileVO">
+		 </collection>
 	</resultMap>	
 	
 	<!-- Master-Detail(1:N) 구조에서 Detail이 Master를 함께 join으로 읽어서 객체를 만들 때 사용 -->

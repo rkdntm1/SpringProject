@@ -22,6 +22,9 @@
 				<input type="hidden" name="amount" value="${pagenation.amount}">
 				<input type="hidden" name="searching" value="${pagenation.searching}">		
 			</form>
+			
+			<%@include file="../common/attachFileManagement.jsp"%>
+			
 		</div>
 		
 		<%@include file="./includes/replyManagement.jsp"%>
@@ -37,6 +40,7 @@
 
 <script>
 $(document).ready(function() {
+	showUploadedFile(${post.attachList});
 	//속성선택자를 통해서 button의 data-oper 속성 'modify'를 가져와서 클릭 이벤트 처리
 	//*-전체선택자, .-클래스선택자, # - 아이디선택자, [] - 속성선택자, :- 의사선택자
 	$("button[data-oper='modify']").on("click", function() {

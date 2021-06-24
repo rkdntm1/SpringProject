@@ -9,18 +9,19 @@
 	<!-- DataTales Example -->
 	<div class="card shadow mb-4">
 		<div class="card-body">
-			<form method="post" action="/post/registerPost">
+			<form id="frmPost" method="post" action="/post/registerPost">
 				<%@include file="./includes/postCommon.jsp"%>
 				
-				<button type="submit" class="btn btn-primary">게시글 등록</button>
+				<button id="btnRegisterPost" type="submit" class="btn btn-primary">게시글 등록</button>
 				<button type="reset" class="btn btn-secondary">초기화</button>
 				<input type="hidden" name="boardId" value="${boardId}">
 			</form>
 		</div>
 	</div>
-
 </div>
 <!-- /.container-fluid -->
+
+<%@include file="../common/attachFileManagement.jsp"%>
 
 </div>
 <!-- End of Main Content -->
@@ -29,5 +30,13 @@
 <script>
 $(document).ready(function(){
 	controlInput('신규');
+	
+	var frmPost = $("#frmPost");
+	
+	$("#btnRegisterPost").on("click", function(e) {
+		e.preventDefault();
+		addAttachInfo(frmPost, "listAttach");
+		frmPost.submit();
+	});
 });
 </script>

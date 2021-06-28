@@ -40,7 +40,10 @@
 
 <script>
 $(document).ready(function() {
-	showUploadedFile(${post.attachList});
+	<c:forEach var="attachVoInStr" items="${post.attachListInGson}">
+		appendUploadUl(<c:out value="${attachVoInStr}"/>);
+	</c:forEach>
+		
 	//속성선택자를 통해서 button의 data-oper 속성 'modify'를 가져와서 클릭 이벤트 처리
 	//*-전체선택자, .-클래스선택자, # - 아이디선택자, [] - 속성선택자, :- 의사선택자
 	$("button[data-oper='modify']").on("click", function() {

@@ -1,8 +1,13 @@
 package www.dream.com.bulletinBoard.model;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,6 +35,7 @@ public class PostVO extends ReplyVO {
 	private int likeCnt;	//좋아요수
 	private int	dislikeCnt;	//싫어요수
 	
+	private List<String> listAttachInStringFormat;
 	private List<AttachFileVO> listAttach;
 	
 	public PostVO(String title, String content, Party writer) {
@@ -42,10 +48,20 @@ public class PostVO extends ReplyVO {
 		return title + "[" + super.replyCnt + "]";
 	}
 	
-	public List<String> getAttachList() {
-		if (listAttach == null || listAttach.isEmpty())
-			return new ArrayList<>();
-		return listAttach.stream().map(vo -> vo.getJson()).collect(Collectors.toList());
+	public List<String> getAttachListInGson() {
+		List<String> ret = new ArrayList<>();
+		ret.addAll(listAttach.stream().map(vo -> vo.getJson()).collect(Collectors.toList()));
+		return ret;
+	}
+	
+	public void parseAttachInfo() {
+		if (listAttach == null) {
+			listAttach = new ArrayList<>();
+		}
+		
+		for (String ai : listAttachInStringFormat) {
+			listAttach.add(AttachFileVO.fromJson(ai));
+		}
 	}
 	
 	@Override

@@ -22,10 +22,9 @@
 <div class="container-fluid">
 	<div class="card shadow mb-4">
 		<div class="card-body">
-			<div class="card-header">첨부파일</div>			
+			<div class="card-header">첨부파일</div>		
 			<div class="card-body" id="uploadDiv">
 				<input id="inFiles" type="file" name="upLoadFile" multiple>
-				<button id="btnUpload">파일올리기</button>
 			</div>
 			
 			<div class="card-body" id="uploadResult">
@@ -50,9 +49,10 @@ $(document).ready(function() {
 	var uploadMaxSize = 1036870912;
 	
 	//화면이 맨 처음 로드 시 들어 있는 깨끗한 상태 기억
-	var initClearStatus = $("#uploadDiv").clone();
+	var initClearStatus = $("#uploadDiv").html();
 	
-	$("#btnUpload").on("click", function(e) {
+	$("#uploadDiv").on("change", "input", function(){
+		alert("ㅇㅇ");
 		var formData = new FormData();
 		var files = $("#inFiles")[0].files;
 		
@@ -70,12 +70,12 @@ $(document).ready(function() {
 			type : 'post',
 			success : function (result) {
 				showUploadedFile(result);
-				//업로드이후 청소
-				$("#uploadDiv").html(initClearStatus.html());
+				//동적인 청소는 연동되어 있는 Event Listener까지 날아가버림. 이에 위임방식채용
+				$("#uploadDiv").html(initClearStatus);
 			}
 		});
 	});
-
+	
 	// IE11까지 고려한 보여 준 이후에 클릭하면 사라지게합니다.
 	$(".bigWrapper").on("click", function() {
 		$(".bigNested").animate({width:'0%', height:'0%'}, 1000);
@@ -133,34 +133,38 @@ $(document).ready(function() {
 	});
 });
 
-function showUploadedFile(result) {
+function appendUploadUl(attachVoInJson) {
 	var liTags = "";
-	$(result).each(function (i, attachVoInJson) {
-		var attachVo = JSON.parse(decodeURL(attachVoInJson));
-		
-		if (attachVo.multimediaType === "others") {
-			liTags += "<li data-attach_info=" + attachVoInJson + "><a href='/uploadFiles/download?fileName=" 
-					+ encodeURIComponent(attachVo.originalFileCallPath) + "'><img src='/resources/img/attachFileIcon.png'>" 
-					+ attachVo.pureFileName + "</a><span>X</span></li>";
-		} else {
-			if (attachVo.multimediaType === "audio") {
-				liTags += "<li data-attach_info=" + attachVoInJson + ">"
-						+ "<a>"
-						+ "<img src='/resources/img/audioThumbnail.png'>" 
-						+ attachVo.pureFileName + "</a>" 
-						+ "<span>X</span>" 
-						+ "</li>";
-			} else if (attachVo.multimediaType === "image" || attachVo.multimediaType === "video") {
-				liTags += "<li data-attach_info=" + attachVoInJson + ">"
-						+ "<a>"
-						+ "<img src='/uploadFiles/display?fileName=" 
-						+ encodeURIComponent(attachVo.fileCallPath) + "'>" + attachVo.pureFileName + "</a>" 
-						+ "<span>X</span>"
-						+ "</li>";
-			} 	  
-		}
-	});
+	var attachVo = JSON.parse(decodeURL(attachVoInJson));
+	
+	if (attachVo.multimediaType === "others") {
+		liTags += "<li data-attach_info=" + attachVoInJson + "><a href='/uploadFiles/download?fileName=" 
+				+ encodeURIComponent(attachVo.originalFileCallPath) + "'><img src='/resources/img/attachFileIcon.png'>" 
+				+ attachVo.pureFileName + "</a><span>X</span></li>";
+	} else {
+		if (attachVo.multimediaType === "audio") {
+			liTags += "<li data-attach_info=" + attachVoInJson + ">"
+					+ "<a>"
+					+ "<img src='/resources/img/audioThumbnail.png'>" 
+					+ attachVo.pureFileName + "</a>" 
+					+ "<span>X</span>" 
+					+ "</li>";
+		} else if (attachVo.multimediaType === "image" || attachVo.multimediaType === "video") {
+			liTags += "<li data-attach_info=" + attachVoInJson + ">"
+					+ "<a>"
+					+ "<img src='/uploadFiles/display?fileName=" 
+					+ encodeURIComponent(attachVo.fileCallPath) + "'>" + attachVo.pureFileName + "</a>" 
+					+ "<span>X</span>"
+					+ "</li>";
+		} 	  
+	}
 	$("#uploadResult ul").append(liTags);  //append 쓴이유  > 업로드 또하면
+}
+
+function showUploadedFile(result) {
+	$(result).each(function (i, attachVoInJson) {
+		appendUploadUl(attachVoInJson);
+	});
 }
 
 /**
@@ -173,12 +177,8 @@ function addAttachInfo(frmContainer, varName) {
 		var jobObj = $(attchLi);
 		
 		var attachVo = jobObj.data("attach_info");
-		attachVo = JSON.parse(decodeURL(attachVo));
 		
-		inputAttaches += "<input type='hidden' name='" + varName +  "[" + i + "].uuid' value=" + attachVo.uuid + ">";
-		inputAttaches += "<input type='hidden' name='" + varName +  "[" + i + "].savedFolderPath' value=" + attachVo.savedFolderPath + ">";
-		inputAttaches += "<input type='hidden' name='" + varName +  "[" + i + "].pureFileName' value=" + attachVo.pureFileName + ">";
-		inputAttaches += "<input type='hidden' name='" + varName +  "[" + i + "].multimediaType' value=" + attachVo.multimediaType + ">";
+		inputAttaches += "<input type='hidden' name='" + varName +  "[" + i + "]' value=" + attachVo + ">";
 	});
 	
 	frmContainer.append(inputAttaches);

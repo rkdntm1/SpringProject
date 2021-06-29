@@ -12,6 +12,8 @@
 			<form id='frmPost' action="/post/modifyPost" method="post">
 				<%@include file="./includes/postCommon.jsp"%>
 				
+				<%@include file="../common/attachFileManagement.jsp"%>
+				
 				<!-- data-oper: data(button 엘리먼트에게 oper라는 변수명에 modify라는 값을 추가해줄거다) -->
 				<button type="submit" data-oper='modify' class="btn btn-primary">수정</button>
 				<button type="submit" data-oper='remove' class="btn btn-danger">삭제</button>
@@ -36,6 +38,11 @@
 <script>
 $(document).ready(function(){
 	controlInput('수정');
+	adjustCRUDAtAttach('수정');
+	
+	<c:forEach var="attachVoInStr" items="${post.attachListInGson}">
+	appendUploadUl('<c:out value="${attachVoInStr}"/>');
+	</c:forEach>
 	
 	var frmPost = $("#frmPost");
 	//처리 우선 순위가 있고 script가 html에 등록 되어 있는 것 보다 앞선다.
@@ -64,8 +71,11 @@ $(document).ready(function(){
 			frmPost.append(amountInput); 
 			
 			frmPost.append(searching);
+		} else if (oper === 'modify') {
+			addAttachInfo(frmPost, "listAttachInStringFormat");
 		}
 		frmPost.submit();
 	});
 });
+	
 </script>

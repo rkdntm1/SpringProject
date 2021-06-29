@@ -119,12 +119,21 @@ public class PostService {
 
 
 	/** 게시글 수정 처리 */
+	@Transactional
 	public boolean updatePost(PostVO post) {
+		attachFileVOMapper.delete(post.getId());
+		List<AttachFileVO> listAttach = post.getListAttach();
+		//첨부파일 정보도 관리합니다. 고성능
+		if (listAttach != null && ! listAttach.isEmpty()) {
+			attachFileVOMapper.insert(post.getId(), listAttach);	
+		}
 		return postMapper.updatePost(post) == 1;
 	}
 
 	/** id 값으로 Post 객체 삭제 */
+	@Transactional
 	public boolean deletePostById(String id) {
+		attachFileVOMapper.delete(id);
 		return postMapper.deleteReplyById(id) == 1;
 	}
 }

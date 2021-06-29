@@ -61,6 +61,7 @@ public class PostController {
 	@PostMapping(value="registerPost")
 	public String registerPost(@RequestParam("boardId") int boardId,
 			PostVO newpost, RedirectAttributes rttr) {
+		newpost.parseAttachInfo();
 		BoardVO board = new BoardVO(boardId);
 		Party writer = new User("hong");
 		newpost.setWriter(writer);
@@ -74,6 +75,7 @@ public class PostController {
 
 	@PostMapping(value="modifyPost")
 	public String modifyPost(@RequestParam("boardId") int boardId, PostVO modifiedPost, Criteria fromUser, RedirectAttributes rttr) {
+		modifiedPost.parseAttachInfo();
 		if (postService.updatePost(modifiedPost)) {
 			rttr.addFlashAttribute("result", "수정처리가 성공");
 		}

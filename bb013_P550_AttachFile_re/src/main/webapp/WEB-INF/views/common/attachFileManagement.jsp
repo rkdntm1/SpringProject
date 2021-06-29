@@ -1,4 +1,4 @@
-<!-- 분할 정복으로 첨부 파일 관리를 복잡도 관리. 이는 유지보수성 향상 -->
+<!-- 분할 정복으로 첨부 파일 관리 복잡도를 관리. 이는 유지보수성 향상 -->
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -23,10 +23,9 @@
 	<div class="card shadow mb-4">
 		<div class="card-body">
 			<div class="card-header">첨부파일</div>
-			
+					
 			<div class="card-body" id="uploadDiv">
 				<input id="inFiles" type="file" name="upLoadFile" multiple>
-				<button id="btnUpload">파일올리기</button>
 			</div>
 			
 			<div class="card-body" id="uploadResult">
@@ -39,11 +38,22 @@
 			</div>
 		</div>
 	</div>
-</div>			
+</div>
 <!-- End of 첨부 파일 목록 -->
 <script src="\resources\js\util\utf8.js"></script>
 
 <script>
+var updateMode;
+function adjustCRUDAtAttach(includer) {
+	if (includer === '수정' || includer === '신규') {
+		updateMode = true;
+		$('#uploadDiv').show();
+	} else if (includer === '조회') {
+		updateMode = false;
+		$('#uploadDiv').hide();
+	}
+}
+
 $(document).ready(function() {
 	//업로드 파일에 대한 확장자 제한하는 정규식
 	var uploadConstraintByExt = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
@@ -51,9 +61,10 @@ $(document).ready(function() {
 	var uploadMaxSize = 1036870912;
 	
 	//화면이 맨 처음 로드 시 들어 있는 깨끗한 상태 기억
-	var initClearStatus = $("#uploadDiv").clone();
+	var initClearStatus = $("#uploadDiv").html();
 	
-	$("#btnUpload").on("click", function(e) {
+	$("#uploadDiv").on("change", "input", function(){
+		alert("ㅇㅇ");
 		var formData = new FormData();
 		var files = $("#inFiles")[0].files;
 		
@@ -71,12 +82,12 @@ $(document).ready(function() {
 			type : 'post',
 			success : function (result) {
 				showUploadedFile(result);
-				//업로드이후 청소
-				$("#uploadDiv").html(initClearStatus.html());
+				//동적인 청소는 연동되어 있는 Event Listener까지 날아가버림. 이에 위임방식채용
+				$("#uploadDiv").html(initClearStatus);
 			}
 		});
 	});
-
+	
 	// IE11까지 고려한 보여 준 이후에 클릭하면 사라지게합니다.
 	$(".bigWrapper").on("click", function() {
 		$(".bigNested").animate({width:'0%', height:'0%'}, 1000);
@@ -118,7 +129,7 @@ $(document).ready(function() {
 	
 	//첨부 취소하기
 	$("#uploadResult").on("click", "span", function(){
-		var targetLi = $(this).closest("li")
+		var targetLi = $(this).closest("li");
 		var attachVo = targetLi.data("attach_info");
 		attachVo = JSON.parse(decodeURL(attachVo));
 		
@@ -128,60 +139,66 @@ $(document).ready(function() {
 			type : 'post',
 			dataType : 'text',
 			success : function (result) {
-				targetLi.remove(); // x를 눌렀을때 li에서도 사라지게 만들기
+				targetLi.remove();
 			}
 		});
 	});
 });
 
-function showUploadedFile(result) {
+function appendUploadUl(attachVoInJson) {
 	var liTags = "";
-	$(result).each(function (i, attachVoInJson) {
-		var attachVo = JSON.parse(decodeURL(attachVoInJson));
-		
-		if (attachVo.multimediaType === "others") {
-			liTags += "<li data-attach_info=" + attachVoInJson + "><a href='/uploadFiles/download?fileName=" 
-					+ encodeURIComponent(attachVo.originalFileCallPath) + "'><img src='/resources/img/attachFileIcon.png'>" 
-					+ attachVo.pureFileName + "</a><span>X</span></li>";
-		} else {
-			if (attachVo.multimediaType === "audio") {
-				liTags += "<li data-attach_info=" + attachVoInJson + ">"
-						+ "<a>"
-						+ "<img src='/resources/img/audioThumbnail.png'>" 
-						+ attachVo.pureFileName + "</a>" 
-						+ "<span>X</span>" 
-						+ "</li>";
-			} else if (attachVo.multimediaType === "image" || attachVo.multimediaType === "video") {
-				liTags += "<li data-attach_info=" + attachVoInJson + ">"
-						+ "<a>"
-						+ "<img src='/uploadFiles/display?fileName=" 
-						+ encodeURIComponent(attachVo.fileCallPath) + "'>" + attachVo.pureFileName + "</a>" 
-						+ "<span>X</span>"
-						+ "</li>";
-			} 	  
-		}
-	});
-	$("#uploadResult ul").append(liTags); //append 쓴이유  > 업로드 또하면
+	var attachVo = JSON.parse(decodeURL(attachVoInJson));
+	
+	if (attachVo.multimediaType === "others") {
+		liTags += "<li data-attach_info=" + attachVoInJson + "><a href='/uploadFiles/download?fileName=" 
+				+ encodeURIComponent(attachVo.originalFileCallPath) + "'><img src='/resources/img/attachFileIcon.png'>" 
+				+ attachVo.pureFileName + "</a>";
+				if (updateMode) {
+					liTags += "<span>X</span>";
+				}
+				liTags += "</li>";
+	} else {
+		if (attachVo.multimediaType === "audio") {
+			liTags += "<li data-attach_info=" + attachVoInJson + ">"
+					+ "<a>"
+					+ "<img src='/resources/img/audioThumbnail.png'>" 
+					+ attachVo.pureFileName + "</a>";
+					if (updateMode) {
+						liTags += "<span>X</span>";
+					}
+					liTags += "</li>";
+		} else if (attachVo.multimediaType === "image" || attachVo.multimediaType === "video") {
+			liTags += "<li data-attach_info=" + attachVoInJson + ">"
+					+ "<a>"
+					+ "<img src='/uploadFiles/display?fileName=" 
+					+ encodeURIComponent(attachVo.fileCallPath) + "'>" + attachVo.pureFileName + "</a>";
+					if (updateMode) {
+						liTags += "<span>X</span>";
+					}
+					liTags += "</li>";
+		} 	  
+	}
+	$("#uploadResult ul").append(liTags);  //append 쓴이유  > 업로드 또하면
 }
-
+function showUploadedFile(result) {
+	$(result).each(function (i, attachVoInJson) {
+		appendUploadUl(attachVoInJson);
+	});
+}
 /**
  * 첨부 파일 기능은 여러 화면에서 재사용될 가능성이 높다.
  이를 각 화면에서 중복 개발하기 보다는 이곳에서 통합적으로 서비스 할 수 있도록 모듈화함
  */
 function addAttachInfo(frmContainer, varName) {
 	var inputAttaches = "";
-	$("#uploadResult ul li").each(function(i, attachLi){
-		var jobObj = $(attachLi);
-
-		var attachVo = jobObj.data("attach_info");
-		attachVo = JSON.parse(decodeURL(attachVo));
+	$("#uploadResult ul li").each(function(i, attchLi){
+		var jobObj = $(attchLi);
 		
-		inputAttaches += "<input type='hidden' name='" + varName +  "[" + i + "].uuid' value=" + attachVo.uuid + ">";
-		inputAttaches += "<input type='hidden' name='" + varName +  "[" + i + "].savedFolderPath' value=" + attachVo.savedFolderPath + ">";
-		inputAttaches += "<input type='hidden' name='" + varName +  "[" + i + "].pureFileName' value=" + attachVo.pureFileName + ">";
-		inputAttaches += "<input type='hidden' name='" + varName +  "[" + i + "].multimediaType' value=" + attachVo.multimediaType + ">";
+		var attachVo = jobObj.data("attach_info");
+		
+		inputAttaches += "<input type='hidden' name='" + varName +  "[" + i + "]' value=" + attachVo + ">";
 	});
+	
 	frmContainer.append(inputAttaches);
 }
-
 </script>

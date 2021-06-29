@@ -6,6 +6,7 @@
 <%@include file="../includes/header.jsp"%>
 <!-- Begin Page Content -->
 <div class="container-fluid">
+	<!-- DataTales Example -->
 	<div class="card shadow mb-4">
 		<div class="card-body">
 			<form id="frmPost" method="post" action="/post/registerPost">
@@ -29,13 +30,13 @@
 <script>
 $(document).ready(function(){
 	controlInput('신규');
+	adjustCRUDAtAttach('신규');
 	
 	var frmPost = $("#frmPost");
 	
 	$("#btnRegisterPost").on("click", function(e) {
 		e.preventDefault();
-		
-		addAttachInfo(frmPost, "listAttach");
+		addAttachInfo(frmPost, "listAttachInStringFormat");
 		frmPost.submit();
 	});
 });

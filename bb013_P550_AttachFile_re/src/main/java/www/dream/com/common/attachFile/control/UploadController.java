@@ -63,31 +63,11 @@ public class UploadController {
 		}
 		
 		for (MultipartFile uf : uploadFiles) {
-			AttachFileVO attachFileVO = new AttachFileVO();
-			attachFileVO.setSavedFolderPath(uploadPath.getAbsolutePath());
-			
-			String originalFilename = uf.getOriginalFilename();
-			//폴더구조없이 순수 파일 이름 찾기
-			String pureFilename = originalFilename.substring(originalFilename.lastIndexOf("\\") + 1);
-			attachFileVO.setPureFileName(pureFilename);
-			//UUID 여러 사용자가 올리는 파일의 이름이 같더라도 모두 수용 할 수 있다.
-			String uuid = UUID.randomUUID().toString();
-			attachFileVO.setUuid(uuid);
-			String pureSaveFileName = attachFileVO.getPureSaveFileName();
-			File save = new File(uploadPath, pureSaveFileName);
-			
-			try {
-				uf.transferTo(save);
-				makeThumbnail(uploadPath, save, pureSaveFileName, attachFileVO);
-				attachFileVO.setMultimediaType(MultimediaType.identifyMultimediaType(save));
-			} catch (IllegalStateException | IOException e) {
-				e.printStackTrace();
-			}
-			listAttachFileVO.add(attachFileVO);
+			listAttachFileVO.add(new AttachFileVO(uploadPath, uf));
 		}
 		List<String> ret = listAttachFileVO.stream()
-				.map(vo -> vo.getJson())
-				.collect(Collectors.toList());
+											.map(vo -> vo.getJson())
+											.collect(Collectors.toList());
 		
 		return new ResponseEntity<>(ret, HttpStatus.OK);
 	}
@@ -159,38 +139,4 @@ public class UploadController {
 		return sdf.format(new Date()).replace('-', File.separatorChar);
 	}
 	
-	private void makeThumbnail(File uploadPath, File uploadedFile, String pureSaveFileName, AttachFileVO attachFileVO) {
-		MultimediaType multimediaType = MultimediaType.identifyMultimediaType(uploadedFile);
-		if (multimediaType == MultimediaType.image) {
-			String pureThumbnailFileName = AttachFileVO.THUMBNAIL_FILE_PREFIX + pureSaveFileName;
-			attachFileVO.setPureThumbnailFileName(pureThumbnailFileName);
-			File thumbnailFile = new File(uploadPath, pureThumbnailFileName);
-			try {
-				Thumbnailator.createThumbnail(uploadedFile, thumbnailFile, 100, 100);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} 
-		} else if (multimediaType == MultimediaType.video) {
-			pureSaveFileName = FileUtil.truncateExt(pureSaveFileName); //확장자 제거한 파일명추출
-			String pureThumbnailFileName = AttachFileVO.THUMBNAIL_FILE_PREFIX + pureSaveFileName + ".png";
-			attachFileVO.setPureThumbnailFileName(pureThumbnailFileName);
-			File thumbnailFile = new File(uploadPath, pureThumbnailFileName);
-			try {
-				int frameNumber = 0;
-				//Video 파일에서 첫번째 프레임의 이미지를 가져오기
-				Picture picture = FrameGrab.getFrameFromFile(uploadedFile, frameNumber);
-				BufferedImage bufferedImage = AWTUtil.toBufferedImage(picture);
-				ByteArrayOutputStream os = new ByteArrayOutputStream(); 
-				ImageIO.write(bufferedImage, "png", os);
-				InputStream is = new ByteArrayInputStream(os.toByteArray());
-				
-				FileOutputStream fileOutputStream = new FileOutputStream(thumbnailFile);
-				//가져온 이미지를 Thumbnail로 만들기
-				Thumbnailator.createThumbnail(is, fileOutputStream, 100, 100);
-				fileOutputStream.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			} 
-		}
-	}
 }

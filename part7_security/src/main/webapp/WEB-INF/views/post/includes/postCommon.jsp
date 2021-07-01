@@ -2,7 +2,8 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-	
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>	
+
 <div class="form-group">
 	<label>아이디</label> <input name="id" value="${post.id}" class="form-control" readonly>
 </div>
@@ -17,7 +18,16 @@
 
 <div class="form-group">
 	<label>작성자</label>
-	<input value="${post.writer.name}" class="form-control" readonly>
+	<!-- 생성 시는 post가 null이며 이 때는 로그인한 사용자 이름.
+		R, U 시는 작성자 이름 -->
+	<c:choose>
+	    <c:when test="${empty post}">
+		    <input value='<sec:authentication property="principal.curUser.name"/>' class="form-control" readonly>
+	    </c:when>
+	    <c:otherwise>
+			<input value="${post.writer.name}" class="form-control" readonly>
+	    </c:otherwise>
+	</c:choose>	
 </div>
 
 <div class="form-group">
@@ -32,6 +42,8 @@
 	<label>, 수정시점 : </label>
 	<fmt:formatDate pattern="yyyy-MM-dd" value="${post.updateDate}" />
 </div>
+
+<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'>
 
 <script type="text/javascript">
 	<!-- 수정 처리 시 title, content에는 readonly는 없어야 함 -->

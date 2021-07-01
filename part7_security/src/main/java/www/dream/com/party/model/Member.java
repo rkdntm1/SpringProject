@@ -10,15 +10,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 시스템 운영자
+ * 회원
  * @author YongHoon Kim
  */
 @Data
 @NoArgsConstructor
-public class Manager extends Party {
+public class Member extends Party {
 	private static List<AuthorityVO> listAuthority = new ArrayList<>();
 	static {
-		listAuthority.add(new AuthorityVO("manager"));
 		listAuthority.add(new AuthorityVO("user"));
 	}
 	
@@ -27,7 +26,7 @@ public class Manager extends Party {
 		return listAuthority;
 	}
 	
-	public Manager(String userId) {
+	public Member(String userId) {
 		super(userId);
 	}
 }

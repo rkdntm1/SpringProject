@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ctc.wstx.util.StringUtil;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import www.dream.com.common.attachFile.model.AttachFileVO;
@@ -54,8 +56,10 @@ public class PostVO extends ReplyVO {
 			listAttach = new ArrayList<>();
 		}
 		
-		for (String ai : listAttachInStringFormat) {
-			listAttach.add(AttachFileVO.fromJson(ai));
+		if (listAttachInStringFormat != null) {
+			for (String ai : listAttachInStringFormat) {
+				listAttach.add(AttachFileVO.fromJson(ai));
+			}	
 		}
 	}
 	

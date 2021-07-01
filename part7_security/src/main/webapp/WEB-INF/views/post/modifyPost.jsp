@@ -15,15 +15,22 @@
 				<%@include file="../common/attachFileManagement.jsp"%>
 				
 				<!-- data-oper: data(button 엘리먼트에게 oper라는 변수명에 modify라는 값을 추가해줄거다) -->
-				<button type="submit" data-oper='modify' class="btn btn-primary">수정</button>
-				<button type="submit" data-oper='remove' class="btn btn-danger">삭제</button>
+				<sec:authentication property="principal" var="customerUser"/>
+				<sec:authorize access="isAuthenticated()">
+					<c:if test="${customerUser.curUser.userId eq post.writer.userId}">
+						<button type="submit" data-oper='modify' class="btn btn-primary">수정</button>
+						<button type="submit" data-oper='remove' class="btn btn-danger">삭제</button>							
+					</c:if>
+				</sec:authorize>
 				<button type="submit" data-oper='list' class="btn btn-secondary">목록</button>	
 				
 				<input id="boardId" type="hidden" name="boardId" value="${boardId}">
 				<input type="hidden" name="postId" value="${post.id}">
 				<input type="hidden" name="pageNumber" value="${pagenation.pageNumber}">
 				<input type="hidden" name="amount" value="${pagenation.amount}">
-				<input type="hidden" name="searching" value="${pagenation.searching}">			
+				<input type="hidden" name="searching" value="${pagenation.searching}">
+				
+				<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'>
 			</form>
 		</div>
 	</div>

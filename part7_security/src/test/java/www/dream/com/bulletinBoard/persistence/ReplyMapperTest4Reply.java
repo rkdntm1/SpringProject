@@ -17,7 +17,7 @@ import www.dream.com.bulletinBoard.model.PostVO;
 import www.dream.com.bulletinBoard.model.ReplyVO;
 import www.dream.com.common.dto.Criteria;
 import www.dream.com.party.model.Admin;
-import www.dream.com.party.model.User;
+import www.dream.com.party.model.Member;
  
 @RunWith(SpringJUnit4ClassRunner.class) 
 @ContextConfiguration("file:src\\main\\webapp\\WEB-INF\\spring\\root-context.xml") //여기에 들어있는정보를바탕으로 객체를 만들어라 junit아
@@ -34,7 +34,7 @@ public class ReplyMapperTest4Reply {
 			//자게 최신글 찾아서 original(원글)로 삼자
 			ReplyVO original = postMapper.getList(3, new Criteria()).get(0);
 			//댓글 아무렇게나 만들어서 2개 insert시켜보기
-			User lee = new User("lee");
+			Member lee = new Member("lee");
 			IntStream.rangeClosed(0, 1).forEach(i -> {
 				ReplyVO reply = new ReplyVO("content" + i, lee);
 				replyMapper.insertReply(original.getId(), reply);
@@ -50,7 +50,7 @@ public class ReplyMapperTest4Reply {
 			//자게 최신글 찾아서 original(원글)로 삼자
 			ReplyVO original = postMapper.findReplyById("0000500006");
 			//댓글 아무렇게나 만들어서 insert
-			User lee = new User("lee");
+			Member lee = new Member("lee");
 			IntStream.rangeClosed(0, 1).forEach(i -> {
 				ReplyVO reply = new ReplyVO("content" + i, lee);
 				replyMapper.insertReply("0000500006", reply);

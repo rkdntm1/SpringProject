@@ -1,9 +1,11 @@
 package www.dream.com.party.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Data;
@@ -20,7 +22,7 @@ import www.dream.com.framework.printer.PrintTarget;
 @Data
 @NoArgsConstructor
 @ClassPrintTarget
-public abstract class Party extends CommonMngVO implements UserDetails{
+public abstract class Party extends CommonMngVO {
 	
 	private String userId;	//로그인 ID
 	private String userPwd;	//암호, 암호화는 나중에
@@ -50,7 +52,5 @@ public abstract class Party extends CommonMngVO implements UserDetails{
 				+ ", male=" + male + ", enabled=" + enabled + ", listContactPoint=" + listContactPoint
 				+ ", toString()=" + super.toString() + "]";
 	}
-
-	
 }
 	

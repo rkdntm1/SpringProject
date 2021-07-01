@@ -12,7 +12,13 @@
 			<%@include file="./includes/postCommon.jsp"%>
 
 			<!-- data-oper: data(button 엘리먼트에게 oper라는 변수명에 modify라는 값을 추가해줄거다) -->
-			<button data-oper='modify' class="btn btn-primary">수정</button>
+			<sec:authentication property="principal" var="customerUser"/>
+			<sec:authorize access="isAuthenticated()">
+				<c:if test="${customerUser.curUser.userId eq post.writer.userId}">
+					<button data-oper='modify' class="btn btn-primary">수정</button>		
+				</c:if>
+			</sec:authorize>
+			
 			<button data-oper='list' class="btn btn-secondary">목록</button>
 
 			<form id="frmOper" action="/post/modifyPost" method="get">

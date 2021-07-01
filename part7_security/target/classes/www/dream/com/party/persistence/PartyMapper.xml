@@ -37,7 +37,7 @@
 	<resultMap type="www.dream.com.party.model.Manager"
 		id="managerResultMap" extends="partyMap">
 	</resultMap>
-	<resultMap type="www.dream.com.party.model.User"
+	<resultMap type="www.dream.com.party.model.Member"
 		id="userResultMap" extends="partyMap">
 	</resultMap>
 	

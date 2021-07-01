@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import www.dream.com.party.model.ContactPoint;
 import www.dream.com.party.model.Party;
-import www.dream.com.party.model.User;
+import www.dream.com.party.model.Member;
 
 /**
  * Mybatis를 활용하여 Party 종류의 객체를 관리하는 인터페이스

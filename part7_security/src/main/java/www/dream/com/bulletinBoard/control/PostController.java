@@ -1,6 +1,11 @@
 package www.dream.com.bulletinBoard.control;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +21,9 @@ import www.dream.com.bulletinBoard.model.PostVO;
 import www.dream.com.bulletinBoard.service.BoardService;
 import www.dream.com.bulletinBoard.service.PostService;
 import www.dream.com.common.dto.Criteria;
+import www.dream.com.framework.springSecurityAdaper.CustomUser;
+import www.dream.com.party.model.Member;
 import www.dream.com.party.model.Party;
-import www.dream.com.party.model.User;
 
 @Controller
 @RequestMapping("/post/*")
@@ -53,17 +59,26 @@ public class PostController {
 	
 	/** 게시글 등록페이지 들어가기 */
 	@GetMapping(value="registerPost")
+	@PreAuthorize("isAuthenticated()") //현재 사용자가 로그인처리된 사용자인가?
 	public void registerPost(@RequestParam("boardId") int boardId, Model model) {
 		model.addAttribute("boardId", boardId);
 	}
 
 	/** 게시글 등록페이지에서 입력한 내용 insert하기 */
 	@PostMapping(value="registerPost")
-	public String registerPost(@RequestParam("boardId") int boardId,
+	@PreAuthorize("isAuthenticated()") //현재 사용자가 로그인처리된 사용자인가?
+	public String registerPost(
+			@AuthenticationPrincipal Principal principal,
+			@RequestParam("boardId") int boardId,
 			PostVO newpost, RedirectAttributes rttr) {
+		
 		newpost.parseAttachInfo();
 		BoardVO board = new BoardVO(boardId);
-		Party writer = new User("hong");
+		
+		UsernamePasswordAuthenticationToken upat = (UsernamePasswordAuthenticationToken) principal;
+		CustomUser cu = (CustomUser) upat.getPrincipal();
+		Party writer = cu.getCurUser();
+		
 		newpost.setWriter(writer);
 		postService.insert(board, newpost);
 

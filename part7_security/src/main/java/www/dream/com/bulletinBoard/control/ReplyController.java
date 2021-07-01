@@ -20,7 +20,7 @@ import www.dream.com.bulletinBoard.service.ReplyService;
 import www.dream.com.common.dto.Criteria;
 import www.dream.com.framework.util.ComparablePair;
 import www.dream.com.party.model.Party;
-import www.dream.com.party.model.User;
+import www.dream.com.party.model.Member;
 
 @RestController
 @RequestMapping("/replies/*")
@@ -62,7 +62,7 @@ public class ReplyController {
 			produces = {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> insertReply(@PathVariable("originalId") String originalId
 			, @RequestBody ReplyVO reply) {
-		Party writer = new User("lee");
+		Party writer = new Member("lee");
 		reply.setWriter(writer);
 		int insertCount = replyService.insertReply(originalId, reply);
 		if (insertCount == 1) {

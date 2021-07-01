@@ -8,8 +8,10 @@
 <!-- 댓글 목록 출력 부분 -->
 <div class="card-footer">
 	<div class="card-header">
-		댓글			
-		<button id="btnOpenReplyModalForNew" class="btn btn-primary btn-xs pull-right">댓글달기</button>
+		댓글
+		<sec:authorize access="isAuthenticated()">
+			<button id="btnOpenReplyModalForNew" class="btn btn-primary btn-xs pull-right">댓글달기</button>
+		</sec:authorize>			
 	</div>
 	<div class="card-body">
 		<!-- 원글에 달린 댓글 목록 페이징으로 출력하기 -->

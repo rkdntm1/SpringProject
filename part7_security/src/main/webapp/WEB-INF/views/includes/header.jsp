@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -330,7 +331,17 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                
+                                <sec:authorize access="isAuthenticated()">
+									<sec:authentication property="principal.curUser.name"/>
+								</sec:authorize>
+								
+								<sec:authorize access="isAnonymous()">
+									<a href="/party/customLogin">로그인</a>
+								</sec:authorize>
+								
+								</span>
                                 <img class="img-profile rounded-circle"
                                     src="/resources/img/undraw_profile.svg">
                             </a>

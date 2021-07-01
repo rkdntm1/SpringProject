@@ -23,7 +23,7 @@ public class PartyMapperTest {
 	@Autowired
 	private PartyMapper partyMapper;
 	
-	@Test
+	//@Test
 	public void test100GetList() {
 		assertNotNull(partyMapper);
 		try {
@@ -33,7 +33,7 @@ public class PartyMapperTest {
 		}
 	}
 	
-	@Test
+	//@Tes	t
 	public void test200FindPartyByUserId() {
 		try {
 			Party found = partyMapper.findPartyByUserId("admin");

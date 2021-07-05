@@ -26,6 +26,7 @@
 				
 				<input id="boardId" type="hidden" name="boardId" value="${boardId}">
 				<input type="hidden" name="postId" value="${post.id}">
+				<input type="hidden" name="writerId" value="${customerUser.curUser.userId}">
 				<input type="hidden" name="pageNumber" value="${pagenation.pageNumber}">
 				<input type="hidden" name="amount" value="${pagenation.amount}">
 				<input type="hidden" name="searching" value="${pagenation.searching}">
@@ -44,6 +45,15 @@
 
 <script>
 $(document).ready(function(){
+	var csrfHN = "${_csrf.headerName}";
+	var csrfTV = "${_csrf.token}";
+	
+	$(document).ajaxSend(
+		function (e, xhr) {
+			xhr.setRequestHeader(csrfHN, csrfTV);
+		}
+	);
+	
 	controlInput('수정');
 	adjustCRUDAtAttach('수정');
 	

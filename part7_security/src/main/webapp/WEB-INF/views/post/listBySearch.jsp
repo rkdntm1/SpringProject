@@ -15,7 +15,7 @@
 	<!-- DataTales Example -->
 	<div class="card shadow mb-4">
 		<div class="card-header py-3">
-			<h6 class="m-0 font-weight-bold text-primary">${boardName} 글 목록</h6>
+			<h6 class="m-0 font-weight-bold text-primary"><a href="/post/listBySearch?boardId=${boardId}">${boardName} 글 목록</a></h6>
 		</div>
 		<div class="card-body">
 		<!-- Paging 이벤트에서 서버로 요청보낼 인자들을 관리합니다. -->

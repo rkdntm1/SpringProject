@@ -1,11 +1,15 @@
 package www.dream.com.bulletinBoard.control;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import www.dream.com.bulletinBoard.model.ReplyVO;
 import www.dream.com.bulletinBoard.service.ReplyService;
 import www.dream.com.common.dto.Criteria;
+import www.dream.com.framework.springSecurityAdaper.CustomUser;
 import www.dream.com.framework.util.ComparablePair;
 import www.dream.com.party.model.Party;
 import www.dream.com.party.model.Member;
@@ -57,13 +62,17 @@ public class ReplyController {
 		return new ResponseEntity<>(replyService.findReplyById(id), HttpStatus.OK);
 	}
 	
+	@PreAuthorize("isAuthenticated()") //현재 사용자가 로그인처리된 사용자인가?
 	@PostMapping(value = "new/{originalId}",
 			consumes = "application/json",
 			produces = {MediaType.TEXT_PLAIN_VALUE})
-	public ResponseEntity<String> insertReply(@PathVariable("originalId") String originalId
-			, @RequestBody ReplyVO reply) {
-		Party writer = new Member("lee");
+	public ResponseEntity<String> insertReply(@AuthenticationPrincipal Principal principal,
+			@PathVariable("originalId") String originalId, @RequestBody ReplyVO reply) {
+		UsernamePasswordAuthenticationToken upat = (UsernamePasswordAuthenticationToken) principal;
+		CustomUser cu = (CustomUser) upat.getPrincipal();
+		Party writer = cu.getCurUser();
 		reply.setWriter(writer);
+		
 		int insertCount = replyService.insertReply(originalId, reply);
 		if (insertCount == 1) {
 			return new ResponseEntity<>(reply.getId(), HttpStatus.OK);

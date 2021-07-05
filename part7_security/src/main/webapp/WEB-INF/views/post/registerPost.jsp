@@ -29,6 +29,15 @@
 <%@include file="../includes/footer.jsp"%>
 <script>
 $(document).ready(function(){
+	var csrfHN = "${_csrf.headerName}";
+	var csrfTV = "${_csrf.token}";
+	
+	$(document).ajaxSend(
+		function (e, xhr) {
+			xhr.setRequestHeader(csrfHN, csrfTV);
+		}
+	);
+	
 	controlInput('신규');
 	adjustCRUDAtAttach('신규');
 	

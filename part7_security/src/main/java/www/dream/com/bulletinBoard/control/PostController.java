@@ -89,7 +89,9 @@ public class PostController {
 	}
 
 	@PostMapping(value="modifyPost")
-	public String modifyPost(@RequestParam("boardId") int boardId, PostVO modifiedPost, Criteria fromUser, RedirectAttributes rttr) {
+	@PreAuthorize("principal.username == #writerId")
+	public String modifyPost(@RequestParam("boardId") int boardId, PostVO modifiedPost, 
+			Criteria fromUser, RedirectAttributes rttr, String writerId) {
 		modifiedPost.parseAttachInfo();
 		if (postService.updatePost(modifiedPost)) {
 			rttr.addFlashAttribute("result", "수정처리가 성공");
@@ -104,8 +106,9 @@ public class PostController {
 
 	/** 게시글 삭제 하기 */
 	@PostMapping(value="removePost")
+	@PreAuthorize("principal.username == #writerId") 
 	public String removePost(@RequestParam("boardId") int boardId, 
-			@RequestParam("postId") String id, Criteria fromUser, RedirectAttributes rttr) {
+			@RequestParam("postId") String id, Criteria fromUser, RedirectAttributes rttr, String writerId) {
 		if (postService.deletePostById(id)) {
 			rttr.addFlashAttribute("result", "삭제처리가 성공");
 		}

@@ -61,6 +61,15 @@
 <script src="\resources\js\util\dateFormat.js"></script>
 
 <script>
+	var csrfHN = "${_csrf.headerName}";
+	var csrfTV = "${_csrf.token}";
+	
+	$(document).ajaxSend(
+		function (e, xhr) {
+			xhr.setRequestHeader(csrfHN, csrfTV);
+		}
+	);
+	
 	var ulReply = $("#ulReply");
 	var postId = "${post.id}";
 	var currentPageNum = 1;
@@ -99,6 +108,17 @@
 	var inputReplyContent = modalReply.find("input[name='replyContent']");
 	var inputReplyer = modalReply.find("input[name='replyer']");
 	var inputReplyDate = modalReply.find("input[name='replyDate']");
+	
+	var curUserName = null;
+	var curUserId = null;
+	
+	<sec:authentication property="principal" var="customerUser"/>
+	<sec:authorize access="isAuthenticated()">
+		curUserName = "${customerUser.curUser.name}";
+		curUserId = "${customerUser.curUser.userId}";
+	</sec:authorize>
+	var csrfHN = "${_csrf.headerName}";
+	var csrfTV = "${_csrf.token}";
 	
 	var btnRegisterReply = $("#btnRegisterReply");
 	var btnModifyReply = $("#btnModifyReply");
@@ -161,7 +181,7 @@
 	$("#btnOpenReplyModalForNew").on("click", function(e) {
 		modalReply.data("original_id", postId); // 창 띄울때 원글id를 데이터로 달아줌.
 		modalReply.data("display_target", null);
-		showModalForCreate()
+		showModalForCreate();
 	});
 	
 	// 대댓글 신규 용도의 모달 창 열기 (자손 결합자)
@@ -178,12 +198,15 @@
 		else
 			modalReply.data("display_target", grandFather);
 		
-		showModalForCreate()
+		showModalForCreate();
 	});
 	
 	function showModalForCreate() {
 		//모달에 들어 있는 모든 내용 청소
 		modalReply.find("input").val("");
+		
+		modalReply.find("input[name='replyer']").val(curUserName); // 댓글입력창 열었을시 작성자를 채워주기
+		inputReplyer.attr("readonly", true);
 		//신규 댓글 달기 시에는 등록일자는 Default 처리. 따라서 보여줄 필요가 없음. 
 		inputReplyDate.closest("div").hide();
 		
@@ -218,8 +241,14 @@
 				inputReplyer.attr("readonly", "readonly");
 				inputReplyDate.attr("readonly", "readonly");
 				
-				btnModifyReply.show();
-				btnRemoveReply.show();
+				//댓글 작성자와 현 사용자를 비교하여 같을 때만 활성화 시켜줄 것임.
+				if (curUserId == replyObj.writer.userId) {
+					btnModifyReply.show();
+					btnRemoveReply.show();	
+				} else {
+					btnModifyReply.hide();
+					btnRemoveReply.hide();
+				}
 				btnRegisterReply.hide();
 				
 				modalReply.modal("show");
@@ -280,7 +309,7 @@
 				modalReply.modal("hide");
 				
 				//댓글을 삭제한 경우와 대댓 삭제한 경우로 나누어 반응 시켜야 합니다.
-				displayUpdatedContents(currentPageNum)
+				displayUpdatedContents(currentPageNum);
 			},
 			function(errMsg) {
 				alert("댓글 삭제 오류 : " + errMsg);

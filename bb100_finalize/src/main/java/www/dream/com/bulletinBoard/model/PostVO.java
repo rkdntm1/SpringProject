@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.ctc.wstx.util.StringUtil;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import www.dream.com.common.attachFile.model.AttachFileVO;
@@ -13,6 +11,7 @@ import www.dream.com.framework.langPosAnalyzer.HashTarget;
 import www.dream.com.framework.printer.ClassPrintTarget;
 import www.dream.com.framework.printer.PrintTarget;
 import www.dream.com.framework.util.ToStringSuperHelp;
+import www.dream.com.hashTag.model.HashTagOpponent;
 import www.dream.com.party.model.Party;
 
 /**
@@ -22,7 +21,7 @@ import www.dream.com.party.model.Party;
 @Data
 @NoArgsConstructor
 @ClassPrintTarget
-public class PostVO extends ReplyVO {
+public class PostVO extends ReplyVO implements HashTagOpponent {
 	public static final String DESCRIM4POST = "post";
 	
 	@HashTarget 
@@ -38,6 +37,10 @@ public class PostVO extends ReplyVO {
 	public PostVO(String title, String content, Party writer) {
 		super(content, writer);
 		this.title = title;
+	}
+	
+	public String getType() {
+		return "Post";
 	}
 	
 	@PrintTarget(order=100, caption="제목", withAnchor=true)

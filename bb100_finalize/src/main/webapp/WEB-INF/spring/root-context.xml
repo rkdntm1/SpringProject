@@ -35,6 +35,8 @@
 	
 	<context:component-scan base-package="www.dream.com.party.service"/>
 	<context:component-scan base-package="www.dream.com.bulletinBoard.service"/>
+	<context:component-scan base-package="www.dream.com.hashTag.service"/>
+	
 	
 	<mybatis-spring:scan base-package="www.dream.com.common.persistence"/>
 	<mybatis-spring:scan base-package="www.dream.com.common.attachFile.persistence"/>

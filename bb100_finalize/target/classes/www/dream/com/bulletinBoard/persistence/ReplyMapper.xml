@@ -39,7 +39,7 @@
 	
 	<!-- 게시글 처리 함수 정의 영역 -->
 	<sql id="searchCommon"> <!-- 공통부분 sql로 묶자 -->
-	s_hashtag h, sm_ht2post m, s_reply p
+	s_hashtag h, sm_ht2StringId m, s_reply p
 	 where h.id in (
 	 	   SELECT id <!-- 단어 계층구조를 활용한 검색 범위 확장 -->
 	   	     FROM s_hashtag
@@ -50,7 +50,8 @@
 	   CONNECT BY PRIOR id = super_id
 	   	)
 	   and h.id = m.hashtag_id
-	   and m.post_id = p.id
+	   and m.opponent_type = 'Post'
+	   and m.opponent_id = p.id
 	   and p.board_id =  #{boardId}
 	</sql>
 
@@ -126,6 +127,27 @@
 	 WHERE p.writer_id = w.user_id	    
 	</select>
 
+	<!-- public List<PostVO> getFavorite(@Param("boardId") int boardId, @Param("curUser") Party curUser); 
+	Top 10 관심사항을 바탕으로 해당 게시판에서 글 검색 기능만들기
+	error : 막 회원가입자가 오면 in이 비어있어서 발생
+	-->
+	<select id="getFavorite" resultMap="rmReply">
+	    select p.*, w.name w_name, w.descrim w_descrim
+		  from sm_ht2StringId mp, s_reply p, s_party w
+		 where mp.opponent_type = 'Post'
+		   and mp.hashtag_id in (
+			select hashtag_id
+			  from sm_ht2StringId m 
+			 where m.opponent_type = #{curUser.type}
+			   and m.opponent_id = #{curUser.id}
+			   ORDER BY occur_cnt DESC
+	     	  OFFSET 0 ROWS FETCH FIRST 10 ROWS ONLY
+		   ) 
+		  and mp.opponent_id = p.id
+		  and p.board_id = #{boardId}
+		  and p.writer_id = w.user_id
+	</select>
+	
 	<!-- public ReplyVO findReplyById(String id); -->
 	<select id="findReplyById" resultMap="rmReply"> 
 	<![CDATA[ 

@@ -1,10 +1,10 @@
 package www.dream.com.hashTag.persistence;
 
-import java.util.List;
 import java.util.Set;
 
 import org.apache.ibatis.annotations.Param;
 
+import www.dream.com.hashTag.model.HashTagOpponent;
 import www.dream.com.hashTag.model.HashtagVO;
 
 public interface HashTagMapper {
@@ -14,14 +14,7 @@ public interface HashTagMapper {
 	 * @return
 	 */
 	public Set<HashtagVO> findExisting(@Param("setHashTag") Set<String> setHashTag);
-
-	/**
-	 * Hashtag와 Post 사이의 관계 정보 다중 입력하기(고성능)
-	 * @param setExisting
-	 * @param id
-	 * @return
-	 */
-	public int insertMapBetweenPost(@Param("setExisting") Set<HashtagVO> setExisting, @Param("postId") String id);
+	public Set<HashtagVO> findPrevUsedHashTag(@Param("opponent") HashTagOpponent hashTagOpponent, @Param("curSearch") Set<String> curSearch);
 
 	/**
 	 * HashtagVO의 id 를 지정한 개수만큼 Sequence를 통하여 한번에 왕창 만들기 - 성능
@@ -30,4 +23,17 @@ public interface HashTagMapper {
 	 */
 	public String getIds(int cnt);
 	public int createHashTag(@Param("setNewHashTag") Set<HashtagVO> newHashtag);
+	
+	/**
+	 * Hashtag와 Post 사이의 관계 정보 다중 입력하기(고성능)
+	 * @param setExisting 	Table에 존재하는 단어의 ID
+	 * @param opponent 		상대방 
+	 * @return
+	 */
+	public int insertMapBetweenStringId(@Param("setExisting") Set<HashtagVO> 
+	setExisting, @Param("opponent") HashTagOpponent opponent);
+	
+	//Mybatis는 Operator Overloading 지원 안함.
+	public void deleteMapBetweenStringId(@Param("opponent") HashTagOpponent hashTagOpponent);
+	public void deleteMapBetweenOpponentStringId(@Param("setExisting") Set<HashtagVO> setExisting, @Param("opponent") HashTagOpponent hashTagOpponent);
 }

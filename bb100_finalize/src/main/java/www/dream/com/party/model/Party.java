@@ -1,12 +1,8 @@
 package www.dream.com.party.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +10,7 @@ import www.dream.com.common.model.CommonMngVO;
 import www.dream.com.framework.langPosAnalyzer.HashTarget;
 import www.dream.com.framework.printer.ClassPrintTarget;
 import www.dream.com.framework.printer.PrintTarget;
+import www.dream.com.hashTag.model.HashTagOpponent;
 
 /**
  * 모든 행위자 정보의 공통적인 상위 정보를 담고있는 추상적인 클래스
@@ -22,7 +19,7 @@ import www.dream.com.framework.printer.PrintTarget;
 @Data
 @NoArgsConstructor
 @ClassPrintTarget
-public abstract class Party extends CommonMngVO {
+public abstract class Party extends CommonMngVO implements HashTagOpponent {
 	
 	private String userId;	//로그인 ID
 	private String userPwd;	//암호, 암호화는 나중에
@@ -38,6 +35,14 @@ public abstract class Party extends CommonMngVO {
 	
 	public Party(String userId) {
 		this.userId = userId;
+	}
+	
+	public String getId() {
+		return userId;
+	}
+	
+	public String getType() {
+		return "Party";
 	}
 	
 	public void addContactPoint(ContactPoint cp) {

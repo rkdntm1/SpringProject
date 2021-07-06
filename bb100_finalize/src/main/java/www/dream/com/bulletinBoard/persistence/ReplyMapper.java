@@ -8,6 +8,7 @@ import www.dream.com.bulletinBoard.model.BoardVO;
 import www.dream.com.bulletinBoard.model.PostVO;
 import www.dream.com.bulletinBoard.model.ReplyVO;
 import www.dream.com.common.dto.Criteria;
+import www.dream.com.party.model.Party;
 
 public interface ReplyMapper {
 	//LRCUD
@@ -46,4 +47,5 @@ public interface ReplyMapper {
 	public int insertReply(@Param("originalId") String originalId, @Param("reply") ReplyVO reply);
 	/** 댓글 수정 처리 */
 	public int updateReply(ReplyVO reply);
+	public List<PostVO> getFavorite(@Param("boardId") int boardId, @Param("curUser") Party curUser);
 }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="www.dream.com.common.attachFile.persistence.AttachFileVOMapper">
+	<resultMap type="www.dream.com.common.attachFile.model.AttachFileVO" id="rmAttachFileVO">
+		<id property="uuid" column="uuid"></id>
+		<result property="savedFolderPath" column="saved_folder_path"></result>
+		<result property="pureFileName" column="pure_file_name"></result>
+		<result property="multimediaType" column="multimedia_type"></result>
+	</resultMap>
+	
+<!-- public int insert(@Param("postId") String postId, @Param("listAttachFile") List<AttachFileVO> listAttachFile); -->
+	<insert id="insert">
+		insert all
+		<foreach collection="listAttachFile" item="af">
+			into s_attach_file(uuid, saved_folder_path, pure_file_name, multimedia_type) 
+				 values(#{af.uuid}, #{af.savedFolderPath}, #{af.pureFileName}, #{af.multimediaType})
+			into sm_post_attach(post_id, uuid) 
+				 values(#{postId}, #{af.uuid})				 
+		</foreach>
+		select * from dual	
+	</insert>
+	
+	<!-- public int delete(@Param("postId") String postId); -->
+	<delete id="delete">
+	    {call
+	       declare
+       	   begin
+       		   delete from s_attach_file 
+       		    where uuid in (
+       		          select uuid 
+       		 	        from sm_post_attach
+       		 	       where post_id = #{postId}
+       				  );
+               delete from sm_post_attach where post_id = #{postId};
+           end
+         }
+	</delete>
+	
+	
+	
+	
+</mapper>
